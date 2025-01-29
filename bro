@@ -19,8 +19,7 @@ function end() {
 // check non interactive question and handle it
 if (process.argv.length > 2) {
   console.time("Goodbye!".gray);
-  let ans = await handle_args(process.argv);
-  console.log(ans.blue.bold);
+  await handle_args(process.argv);
   end();
 }
 
