@@ -56,18 +56,19 @@ fi
 
 # Check if an argument was passed and set it as an environment variable in the dotFile
 if [ $# -eq 1 ]; then
-    echo -e "${GREEN}The argument you passed will be set as an env var with the name COHERE_API_KEY in the file $dotFile${NC}"
+    echo -e "${GREEN}The argument you passed will be set as an env var with the name DEEPSEEK_API_KEY in the file $dotFile${NC}"
 
     # Update the dotFile
-    if grep -q "export COHERE_API_KEY" "$dotFile"; then
+    if grep -q "export DEEPSEEK_API_KEY" "$dotFile"; then
         # Update the existing value
-        sed -i "s/export COHERE_API_KEY=.*/export COHERE_API_KEY=\"$1\"/" "$dotFile"
+        sed -i "s/export DEEPSEEK_API_KEY=.*/export DEEPSEEK_API_KEY=\"$1\"/" "$dotFile"
         source "$dotFile"
     else
         # Add the new value
-        echo "export COHERE_API_KEY=\"$1\"" >> "$dotFile"
+        echo "export DEEPSEEK_API_KEY=\"$1\"" >> "$dotFile"
         source $dotFile
     fi
 else
-    echo -e "${YELLOW}You didn't provide a COHERE_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
+    echo -e "${YELLOW}You didn't provide a DEEPSEEK_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
 fi
+
