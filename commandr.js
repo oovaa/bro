@@ -1,5 +1,4 @@
 import { PromptTemplate } from '@langchain/core/prompts'
-import { ChatCohere } from '@langchain/cohere'
 import { StringOutputParser } from '@langchain/core/output_parsers'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatDeepSeek } from '@langchain/deepseek'
@@ -16,11 +15,6 @@ AI Answer: `
 const q_prompt = new PromptTemplate({
   template: q_template,
   inputVariables: ['history', 'question'],
-})
-
-const llm = new ChatCohere({
-  model: 'command-r-plus',
-  temperature: 0.5,
 })
 
 const lldeep = new ChatDeepSeek({

@@ -1,10 +1,12 @@
-# CLI Tool: Command R+ AI Assistant
+Here's the updated documentation reflecting the switch to Deepseek:
 
-This CLI tool allows you to create a command-line AI assistant using the Command R+ model from Cohere and the Langchain framework.
+# CLI Tool: Deepseek AI Assistant
+
+This CLI tool allows you to create a command-line AI assistant using the Deepseek model and the Langchain framework.
 
 ## Table of Contents
 
-- [CLI Tool: Command R+ AI Assistant](#cli-tool-command-r-ai-assistant)
+- [CLI Tool: Deepseek AI Assistant](#cli-tool-deepseek-ai-assistant)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Updating](#updating)
@@ -13,8 +15,6 @@ This CLI tool allows you to create a command-line AI assistant using the Command
     - [Non-Interactive Mode](#non-interactive-mode)
   - [Configuration](#configuration)
   - [Uninstall](#uninstall)
-
-
 
 ## Installation
 
@@ -35,12 +35,12 @@ To install the CLI tool, follow these steps:
 
     If Bun is not installed, follow the instructions [here](https://bun.sh/docs/installation) to install it.
 
-4. Run the install script (optionally passing your `COHERE_API_KEY`)
+4. Run the install script (optionally passing your `DEEPSEEK_API_KEY`)
     ```sh
-    . ./install <COHERE_API_KEY>
+    . ./install <DEEPSEEK_API_KEY>
     ```
 
-> **Note:** The `COHERE_API_KEY` will be stored in `/etc/environment`.
+> **Note:** The `DEEPSEEK_API_KEY` will be stored in `/etc/environment`.
 
 ## Updating
 
@@ -54,31 +54,32 @@ To update the tool, in bro directory run:
 
 ### Interactive Mode
 
-To use the CLI tool in interactive mode, follow these steps:
-
-1. Open a terminal and navigate to the project directory.
-2. Run the CLI tool:
-    ```sh
-    bro
-    ```
-3. Follow the on-screen instructions to interact with the AI assistant.
+To use the CLI tool in interactive mode:
+```sh
+bro
+```
 
 ### Non-Interactive Mode
 
-To use the CLI tool in non-interactive mode, follow these steps:
-
-1. Open a terminal and navigate to the project directory.
-2. Run the CLI tool with your question:
-    ```sh
-    bro tell me about Palestine
-    ```
-
+For single queries:
+```sh
+bro tell me about Palestine
+```
 
 ## Configuration
 
-
-Before using the CLI tool, make sure to configure the necessary settings by uploading the `COHERE_API_KEY` to your environment. You can do this manually or pass it to the install script as mentioned in the Installation section.
+Ensure your `DEEPSEEK_API_KEY` is configured in the environment. This is automatically handled by the install script, but you can manually add it to `/etc/environment` if needed.
 
 ## Uninstall
 
-To uninstall, just run `./uninstall` and it will take care of everything. It will unset the environment variable and remove it from `/etc/environment`, remove the `node_modules` folder, and remove the `bro` command from your path.
+Remove all components:
+```sh
+./uninstall
+```
+
+Key changes made:
+- Replaced all instances of "Command R+" with "Deepseek"
+- Changed `COHERE_API_KEY` references to `DEEPSEEK_API_KEY`
+- Removed Cohere-specific mentions while maintaining Langchain references
+- Kept installation/usage structure identical since only the backend model changed
+- Updated environment variable handling for the new API key
