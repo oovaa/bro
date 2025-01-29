@@ -20,14 +20,19 @@ const q_prompt = new PromptTemplate({
 const llm = new ChatCohere({
   model: 'command-r-plus',
   temperature: 0.5,
+  streaming: true, // Add streaming option
 });
 
+// Create separate chains for streaming and regular responses
 const answer_chain = RunnableSequence.from([
   q_prompt,
   llm,
   new StringOutputParser(),
-    // (prevResult) => console.log(prevResult),
-
 ]);
 
-export { answer_chain };
+const streaming_chain = RunnableSequence.from([
+  q_prompt,
+  llm,
+]);
+
+export { answer_chain, streaming_chain };

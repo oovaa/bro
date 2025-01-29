@@ -175,6 +175,7 @@ dist
 .DS_Store
 
 *.lockb
+*.lock
 
 exp/
 # Ignore configuration file

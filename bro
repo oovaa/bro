@@ -3,10 +3,9 @@
 // @ts-check
 
 import { rl } from "./io.js";
-import { answer_chain } from "./commandr.js";
+import {  streaming_chain } from "./commandr.js";
 import { handle_args } from "./nonInteractive.js";
 import "colors";
-
 
 /**
  * handle quiting with a success status code
@@ -17,7 +16,7 @@ function end() {
   process.exit(0);
 }
 
-// check non interactive quetion and handle it
+// check non interactive question and handle it
 if (process.argv.length > 2) {
   console.time("Goodbye!".gray);
   let ans = await handle_args(process.argv);
@@ -26,46 +25,63 @@ if (process.argv.length > 2) {
 }
 
 /**
- * Runs the chat CLI application to test the bot response.
- *
- * @returns {Promise<void>} A promise that resolves when the chat CLI application is finished.
+ * Process streaming response
+ * @param {AsyncIterable<any>} stream 
+ * @returns {Promise<string>}
+ */
+async function processStream(stream) {
+  let fullResponse = '';
+  
+  for await (const chunk of stream) {
+    const content = chunk.content;
+    if (content) {
+      process.stdout.write(content.blue.bold);
+      fullResponse += content;
+    }
+  }
+  process.stdout.write('\n');
+  return fullResponse;
+}
+
+/**
+ * Runs the chat CLI application with streaming
+ * @returns {Promise<void>}
  */
 async function run() {
-  let historyStr = ""; // Initialize history as an empty string
+  let historyStr = "";
   console.time("Goodbye!".gray);
 
   async function ask() {
-    rl.question("You: ", async (/** @type {string} */ msg) => {
+    rl.question("You: ", async (msg) => {
       msg = msg.trim();
       if (msg === "") {
         ask();
         return;
       }
-      if (msg.toLocaleLowerCase() === "exit") {
+      if (msg.toLowerCase() === "exit") {
         end();
       } else {
         try {
-          const response = await answer_chain.invoke({
+          const stream = await streaming_chain.stream({
             question: msg,
-            history: historyStr, // Pass the current history string
+            history: historyStr,
           });
 
-          // Append the new message to the history string
+          const response = await processStream(stream);
           historyStr += `Human: ${msg}\nAI: ${response}\n`;
-
-          console.log(response.blue.bold);
         } catch (error) {
-          console.error("Error:", error.message);
+          console.error("\nError:", error.message);
         }
-        ask(); // Call ask() again to wait for the next question
+        ask();
       }
     });
   }
 
   // Start the asking loop
   ask();
-} // Register signal handlers
+}
 
+// Register signal handlers
 ["SIGINT", "SIGTERM", "SIGQUIT", "SIGTSTP"].forEach((signal) => {
   rl.on(signal, () => {
     console.log();
