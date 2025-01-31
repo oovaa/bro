@@ -76,10 +76,3 @@ Remove all components:
 ```sh
 ./uninstall
 ```
-
-Key changes made:
-- Replaced all instances of "Command R+" with "Deepseek"
-- Changed `COHERE_API_KEY` references to `DEEPSEEK_API_KEY`
-- Removed Cohere-specific mentions while maintaining Langchain references
-- Kept installation/usage structure identical since only the backend model changed
-- Updated environment variable handling for the new API key
