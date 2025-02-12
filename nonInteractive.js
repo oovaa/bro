@@ -1,5 +1,5 @@
 import { streaming_chain } from './commandr'
-import colors from "colors"
+import 'colors'
 
 /**
  * Handles non-interactive mode with streaming
@@ -8,20 +8,21 @@ import colors from "colors"
  */
 export async function handle_args(args) {
   const question = args.slice(2).join(' ')
-  let fullResponse = '';
-  
-  const stream = await streaming_chain.stream({ 
-    question: question, 
-    history: '' 
-  });
+  let fullResponse = ''
+
+  const stream = await streaming_chain.stream({
+    question: question,
+    history: '',
+  })
 
   for await (const chunk of stream) {
-    const content = chunk.content;
+    const content = chunk.content
     if (content) {
-      process.stdout.write(content.blue.bold);
-      fullResponse += content;
+      // @ts-ignore
+      process.stdout.write(content.blue.bold)
+      fullResponse += content
     }
   }
-  process.stdout.write('\n');
-  return fullResponse;
+  process.stdout.write('\n')
+  return fullResponse
 }

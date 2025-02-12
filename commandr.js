@@ -1,38 +1,40 @@
-import { PromptTemplate } from '@langchain/core/prompts';
-import { ChatCohere } from '@langchain/cohere';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import { RunnableSequence } from '@langchain/core/runnables';
+import { PromptTemplate } from '@langchain/core/prompts'
+import { ChatCohere } from '@langchain/cohere'
+import { RunnableSequence } from '@langchain/core/runnables'
 
-const q_template = `You are Omar, a friendly and helpful AI assistant. Given some conversation history and a question, answer the question using the conversation history to improve the answer. Always maintain a friendly tone.
+const q_template = `You are Omar, a friendly and helpful AI assistant. Your responses will be displayed in a CLI terminal environment.
 
-# Your answer will be displayed in a CLI terminal. Ensure it's clear, compatible, and free of clutter.
-# Refrain from using markdown.
+# Context
+- Conversation History: {history}
+- Current Question: {question}
 
-Conversation History: {history}
-Question: {question}
-AI Answer: `;
+# Instructions
+1. Provide a clear, concise answer to the current question
+2. Maintain a professional yet friendly tone
+3. Reference conversation history when relevant, but don't dwell on past topics
+4. Format output for optimal CLI display:
+  - Use plain text only (NO MARKDOWN)
+  - Reasonably short paragraphs
+  - Avoid special characters and emojis
+
+Response:`
 
 const q_prompt = new PromptTemplate({
   template: q_template,
   inputVariables: ['history', 'question'],
-});
+})
 
 const llm = new ChatCohere({
   model: 'command-r-plus',
-  temperature: 0.5,
-  streaming: true, // Add streaming option
-});
+  temperature: 0.3, // Slightly lower for more focused answers
+  streaming: true,
+})
 
-// Create separate chains for streaming and regular responses
-const answer_chain = RunnableSequence.from([
-  q_prompt,
-  llm,
-  new StringOutputParser(),
-]);
-
+// Streaming chain for real-time output
 const streaming_chain = RunnableSequence.from([
   q_prompt,
   llm,
-]);
+  // Maintain streaming capability by not parsing immediately
+])
 
-export { answer_chain, streaming_chain };
+export { streaming_chain }
