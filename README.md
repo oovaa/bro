@@ -2,6 +2,8 @@
 
 This CLI tool allows you to create a command-line AI assistant using the Command R+ model from Cohere and the Langchain framework.
 
+![alt](./logo.png)
+
 ## Table of Contents
 
 - [CLI Tool: Command R+ AI Assistant](#cli-tool-command-r-ai-assistant)
