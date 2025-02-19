@@ -1,4 +1,4 @@
-import { streaming_chain_groq } from './chains'
+import { streaming_chain } from './chains'
 import 'colors'
 import { dontThink, processStream } from './io'
 
@@ -11,7 +11,7 @@ export async function handle_args(args) {
   const question = args.slice(2).join(' ')
   let fullResponse = ''
 
-  const stream = await streaming_chain_groq.stream({
+  const stream = await streaming_chain.stream({
     question: question,
     history: '',
   })

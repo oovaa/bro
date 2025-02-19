@@ -4,7 +4,7 @@
 
 import { processStream, rl } from './io.js'
 import { handle_args } from './nonInteractive.js'
-import { streaming_chain_groq } from './chains.js'
+import { streaming_chain } from './chains.js'
 
 /**
  * handle quiting with a success status code
@@ -41,7 +41,7 @@ async function run() {
         end()
       } else {
         try {
-          const stream = await streaming_chain_groq.stream({
+          const stream = await streaming_chain.stream({
             question: msg,
             history: historyStr,
           })
