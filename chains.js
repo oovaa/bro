@@ -1,6 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatCohere } from '@langchain/cohere'
 import { RunnableSequence } from '@langchain/core/runnables'
+import { ChatGroq } from '@langchain/groq'
 
 const q_template = `You are Omar, a friendly and helpful AI assistant. Your responses will be displayed in a CLI terminal environment.
 
@@ -30,8 +31,6 @@ const llm = new ChatCohere({
   streaming: true,
 })
 
-
-
 // Streaming chain for real-time output
 const streaming_chain = RunnableSequence.from([
   q_prompt,
@@ -39,4 +38,25 @@ const streaming_chain = RunnableSequence.from([
   // Maintain streaming capability by not parsing immediately
 ])
 
-export { streaming_chain }
+const groq = new ChatGroq({
+  model: 'deepseek-r1-distill-qwen-32b',
+  temperature: 0.3, // Adjust as needed
+  streaming: true, // Enable streaming
+  maxRetries: 2,
+})
+
+// Streaming chain for real-time output
+const streaming_chain_groq = RunnableSequence.from([
+  q_prompt,
+  groq,
+  // Streaming remains active by avoiding immediate parsing
+])
+
+// console.log(
+//   await streaming_chain_groq.invoke({
+//     history: '',
+//     question: 'tell me about you',
+//   })
+// )
+
+export { streaming_chain, streaming_chain_groq }

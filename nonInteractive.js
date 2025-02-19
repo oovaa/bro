@@ -1,5 +1,6 @@
-import { streaming_chain } from './chains'
+import { streaming_chain_groq } from './chains'
 import 'colors'
+import { dontThink, processStream } from './io'
 
 /**
  * Handles non-interactive mode with streaming
@@ -10,19 +11,14 @@ export async function handle_args(args) {
   const question = args.slice(2).join(' ')
   let fullResponse = ''
 
-  const stream = await streaming_chain.stream({
+  const stream = await streaming_chain_groq.stream({
     question: question,
     history: '',
   })
 
-  for await (const chunk of stream) {
-    const content = chunk.content
-    if (content) {
-      // @ts-ignore
-      process.stdout.write(content.blue.bold)
-      fullResponse += content
-    }
-  }
-  process.stdout.write('\n')
+  if (args.includes('-s')) {
+    args.splice(args.indexOf('-s'), 1)
+    await dontThink(stream)
+  } else await processStream(stream)
   return fullResponse
 }

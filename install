@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 # Check the user's default shell
 user_shell=$SHELL
-exec_link_path="/usr/local/bin"
+exec_link_path="$HOME/.local/bin" # Use user-specific bin directory
 
 # Print the detected shell
 echo -e "${GREEN}Detected shell: $user_shell${NC}"
@@ -46,28 +46,49 @@ else
     exit 1
 fi
 
+# Ensure ~/.local/bin exists
+mkdir -p "$exec_link_path"
+echo -e "${GREEN}Created directory $exec_link_path (if it didn't exist) ✅${NC}"
+
+# Add ~/.local/bin to PATH if not already present
+if [[ ":$PATH:" != *":$exec_link_path:"* ]]; then
+    echo "export PATH=\"$exec_link_path:\$PATH\"" >> "$dotFile"
+    echo -e "${GREEN}Added $exec_link_path to PATH in $dotFile ✅${NC}"
+    source "$dotFile" # Apply changes to the current session
+fi
+
 # Create a symbolic link to the bro script in the exec_link_path directory
-if ln -sf "$(pwd)/bro" $exec_link_path; then
-    echo -e "${GREEN}Moved the exec file to the system's path ✅${NC}"
+if ln -sf "$(pwd)/bro" "$exec_link_path/bro"; then
+    echo -e "${GREEN}Created a symbolic link for bro in $exec_link_path ✅${NC}"
 else
-    echo -e "${RED}Failed to move the exec file to the system's path. Please check your permissions.${NC}"
+    echo -e "${RED}Failed to create a symbolic link for bro in $exec_link_path.${NC}"
     exit 1
 fi
 
-# Check if an argument was passed and set it as an environment variable in the dotFile
+# Ask for GROQ_API_KEY if not provided as an argument
 if [ $# -eq 1 ]; then
-    echo -e "${GREEN}The argument you passed will be set as an env var with the name COHERE_API_KEY in the file $dotFile${NC}"
+    GROQ_API_KEY=$1
+else
+    echo -e "${YELLOW}Please provide your GROQ_API_KEY:${NC}"
+    read -r GROQ_API_KEY
+fi
+
+# Set GROQ_API_KEY as an environment variable in the dotFile
+if [ -n "$GROQ_API_KEY" ]; then
+    echo -e "${GREEN}Setting GROQ_API_KEY in $dotFile${NC}"
 
     # Update the dotFile
-    if grep -q "export COHERE_API_KEY" "$dotFile"; then
+    if grep -q "export GROQ_API_KEY" "$dotFile"; then
         # Update the existing value
-        sed -i "s/export COHERE_API_KEY=.*/export COHERE_API_KEY=\"$1\"/" "$dotFile"
-        source "$dotFile"
+        sed -i "s/export GROQ_API_KEY=.*/export GROQ_API_KEY=\"$GROQ_API_KEY\"/" "$dotFile"
     else
         # Add the new value
-        echo "export COHERE_API_KEY=\"$1\"" >> "$dotFile"
-        source $dotFile
+        echo "export GROQ_API_KEY=\"$GROQ_API_KEY\"" >> "$dotFile"
     fi
+
+    # Source the dotFile to apply changes
+    source "$dotFile"
+    echo -e "${GREEN}GROQ_API_KEY set successfully ✅${NC}"
 else
-    echo -e "${YELLOW}You didn't provide a COHERE_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
+    echo -e "${YELLOW}You didn't provide a GROQ_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
 fi
