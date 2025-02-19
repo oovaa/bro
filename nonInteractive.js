@@ -1,4 +1,4 @@
-import { streaming_chain } from './commandr'
+import { streaming_chain } from './chains'
 import 'colors'
 
 /**

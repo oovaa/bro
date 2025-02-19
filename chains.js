@@ -30,6 +30,8 @@ const llm = new ChatCohere({
   streaming: true,
 })
 
+
+
 // Streaming chain for real-time output
 const streaming_chain = RunnableSequence.from([
   q_prompt,
