@@ -8,6 +8,15 @@ const rl = createInterface({
 })
 
 /**
+ * Removes unwanted Markdown formatting from text
+ * @param {string} text
+ * @returns {string}
+ */
+function cleanOutput(text) {
+  return text.replace(/[*#\-]+/g, '') // Removes **, _, #, >, -
+}
+
+/**
  * Process streaming response
  * @param {AsyncIterable<any>} stream
  * @returns {Promise<string>}
@@ -17,13 +26,14 @@ export async function processStream(stream) {
   let msg_color = colors.gray.bold
 
   for await (const chunk of stream) {
-    const content = chunk.content
+    let content = chunk.content
     if (content == '<think>') continue
     if (content == '</think>') {
       msg_color = colors.blue.bold
       continue
     }
     if (content) {
+      content = cleanOutput(content) // Clean the response before displaying
       process.stdout.write(msg_color(content))
       fullResponse += content
     }
@@ -31,6 +41,7 @@ export async function processStream(stream) {
   process.stdout.write('\n')
   return fullResponse
 }
+
 /**
  * Process streaming response without displaying thinking output
  * @param {AsyncIterable<any>} stream
@@ -43,13 +54,13 @@ export async function dontThink(stream) {
   let isFirstChunk = true // Track if it's the first chunk
 
   for await (const chunk of stream) {
-    const content = chunk.content
+    let content = chunk.content
     if (content == '</think>') {
       foundThinkEnd = true
       continue
     }
     if (foundThinkEnd && content) {
-      // Trim leading spaces/newlines for the first chunk
+      content = cleanOutput(content) // Clean the response before displaying
       const trimmedContent = isFirstChunk ? content.trimStart() : content
       process.stdout.write(msg_color(trimmedContent))
       fullResponse += trimmedContent
