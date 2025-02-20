@@ -1,4 +1,4 @@
-# CLI Tool: Groq & DeepSeek AI Assistant
+# Bro: Groq & DeepSeek AI Assistant
 
 This CLI tool provides an AI assistant powered by Groq's API and DeepSeek models through the Langchain framework.
 
