@@ -7,8 +7,7 @@
     "colors": "^1.4.0"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/prompt-sync": "^4.2.3"
+    "@types/bun": "latest"
   },
   "type": "module"
 }
