@@ -25,7 +25,7 @@ const q_prompt = new PromptTemplate({
 })
 
 const groq = new ChatGroq({
-  model: 'deepseek-r1-distill-qwen-32b',
+  model: 'deepseek-r1-distill-llama-70b',
   temperature: 0.3, // Adjust as needed
   streaming: true, // Enable streaming
   maxRetries: 2,
