@@ -1,6 +1,10 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatGroq } from '@langchain/groq'
+import 'langsmith'
+import { wrapSDK } from 'langsmith/wrappers'
+
+
 
 const q_template = `You are Omar, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
 
@@ -24,12 +28,13 @@ const q_prompt = new PromptTemplate({
   inputVariables: ['history', 'question'],
 })
 
-const groq = new ChatGroq({
-  model: 'deepseek-r1-distill-llama-70b',
-  temperature: 0.3, // Adjust as needed
-  streaming: true, // Enable streaming
-  maxRetries: 2,
-})
+const groq = wrapSDK(
+  new ChatGroq({
+    model: 'deepseek-r1-distill-llama-70b',
+    temperature: 0.3, // Adjust as needed
+    streaming: true, // Enable streaming
+  })
+)
 
 // Streaming chain for real-time output
 const streaming_chain = RunnableSequence.from([
@@ -37,12 +42,5 @@ const streaming_chain = RunnableSequence.from([
   groq,
   // Streaming remains active by avoiding immediate parsing
 ])
-
-// console.log(
-//   await streaming_chain.invoke({
-//     history: '',
-//     question: 'tell me about you',
-//   })
-// )
 
 export { streaming_chain }
