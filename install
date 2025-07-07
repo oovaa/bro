@@ -87,7 +87,11 @@ if [ -n "$GROQ_API_KEY" ]; then
     fi
 
     # Source the dotFile to apply changes
-    source "$dotFile"
+    if [[ $user_shell == */zsh ]]; then
+        exec zsh
+    else
+        source "$dotFile"
+    fi
     echo -e "${GREEN}GROQ_API_KEY set successfully ✅${NC}"
 else
     echo -e "${YELLOW}You didn't provide a GROQ_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
