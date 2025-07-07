@@ -8,16 +8,18 @@ const rl = createInterface({
 })
 
 /**
- * Removes unwanted Markdown formatting from text
+ * Removes unwanted Markdown formatting and trims whitespace
  * @param {string} text
  * @returns {string}
  */
 function cleanOutput(text) {
-  return text.replace(/[*#\-]+/g, '') // Removes **, _, #, >, -
+  return text
+    .replace(/[*_`#\-]+/g, '') // Remove markdown formatting
+    .replace(/\s+$/g, '') // Remove trailing whitespace
 }
 
 /**
- * Process streaming response
+ * Process streaming response with color and cleaning
  * @param {AsyncIterable<any>} stream
  * @returns {Promise<string>}
  */
@@ -27,13 +29,13 @@ export async function processStream(stream) {
 
   for await (const chunk of stream) {
     let content = chunk.content
-    if (content == '<think>') continue
-    if (content == '</think>') {
+    if (content === '<think>') continue
+    if (content === '</think>') {
       msg_color = colors.blue.bold
       continue
     }
     if (content) {
-      content = cleanOutput(content) // Clean the response before displaying
+      content = cleanOutput(content)
       process.stdout.write(msg_color(content))
       fullResponse += content
     }
@@ -43,7 +45,7 @@ export async function processStream(stream) {
 }
 
 /**
- * Process streaming response without displaying thinking output
+ * Process streaming response, skipping <think> phase
  * @param {AsyncIterable<any>} stream
  * @returns {Promise<string>}
  */
@@ -51,23 +53,23 @@ export async function dontThink(stream) {
   let fullResponse = ''
   let msg_color = colors.blue.bold
   let foundThinkEnd = false
-  let isFirstChunk = true // Track if it's the first chunk
+  let isFirstChunk = true
 
   for await (const chunk of stream) {
     let content = chunk.content
-    if (content == '</think>') {
+    if (content === '</think>') {
       foundThinkEnd = true
       continue
     }
     if (foundThinkEnd && content) {
-      content = cleanOutput(content) // Clean the response before displaying
+      content = cleanOutput(content)
       const trimmedContent = isFirstChunk ? content.trimStart() : content
       process.stdout.write(msg_color(trimmedContent))
       fullResponse += trimmedContent
-      isFirstChunk = false // Mark that the first chunk has been processed
+      isFirstChunk = false
     }
   }
-  process.stdout.write('\n') // Add a newline at the end
+  process.stdout.write('\n')
   return fullResponse
 }
 
