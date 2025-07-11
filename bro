@@ -68,5 +68,11 @@ async function run() {
   })
 })
 
+// help flag
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`Usage: bro [question] [-s]\n\nInteractive: bro\nNon-interactive: bro \"your question\" [-s]\n\nFlags:\n  -s   Stream response only (no thinking phase)\n  -h, --help   Show this help message`)
+  process.exit(0)
+}
+
 // Run the application
 run()

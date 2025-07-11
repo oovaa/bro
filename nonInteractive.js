@@ -9,7 +9,7 @@ import { dontThink, processStream } from './io'
  */
 export async function handle_args(args) {
   if (!args || args.length < 3) {
-    console.error('Usage: bro <question> [-s]')
+    console.error('Usage: bro <question> [-s]\n\nExample: bro "your question" [-s]')
     process.exit(1)
   }
   const question = args.slice(2).join(' ').trim()

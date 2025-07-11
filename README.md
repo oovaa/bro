@@ -6,15 +6,26 @@ This CLI tool provides an AI assistant powered by Groq's API and DeepSeek models
 
 ## Table of Contents
 
-- [CLI Tool: Groq \& DeepSeek AI Assistant](#cli-tool-groq--deepseek-ai-assistant)
+- [Bro: Groq \& DeepSeek AI Assistant](#bro-groq--deepseek-ai-assistant)
   - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Updating](#updating)
   - [Usage](#usage)
     - [Interactive Mode](#interactive-mode)
     - [Non-Interactive Mode](#non-interactive-mode)
   - [Configuration](#configuration)
+  - [Troubleshooting](#troubleshooting)
   - [Uninstall](#uninstall)
+  - [Contributing](#contributing)
+  - [Supported Platforms](#supported-platforms)
+
+## Prerequisites
+
+- Linux or macOS (Windows not officially supported)
+- [Bun](https://bun.sh/docs/installation) (required)
+- Node.js (recommended for compatibility)
+- Supported shells: bash, zsh
 
 ## Installation
 
@@ -56,8 +67,9 @@ bro
 ### Non-Interactive Mode
 ```sh
 bro "tell me about quantum computing"  # Regular response
-bro -s "explain AI safety"             # Stream response without thinking output
+bro -s "explain AI safety"             # Stream response (no thinking output)
 ```
+- The `-s` flag skips the "thinking" phase and streams only the final answer.
 
 ## Configuration
 
@@ -65,6 +77,13 @@ The install script automatically sets up:
 - `GROQ_API_KEY` in your shell config
 - Symbolic link in `~/.local/bin`
 - Required dependencies
+
+## Troubleshooting
+
+- If you see errors about Bun or missing dependencies, ensure Bun is installed and in your PATH.
+- If `bro` is not found, make sure `~/.local/bin` is in your PATH and the symbolic link exists.
+- For shell issues, only bash and zsh are supported.
+- If you need to reset your API key, edit your shell config file and restart your terminal.
 
 ## Uninstall
 ```sh
@@ -75,3 +94,11 @@ Removes:
 - Symbolic link
 - Environment variables
 - Local dependencies
+
+## Contributing
+
+Pull requests and issues are welcome! Please open an issue for bugs or feature requests.
+
+## Supported Platforms
+
+Tested on Linux and macOS. Windows is not officially supported.
