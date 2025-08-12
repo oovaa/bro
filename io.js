@@ -13,9 +13,7 @@ const rl = createInterface({
  * @returns {string}
  */
 function cleanOutput(text) {
-  return text
-    .replace(/[*_`#\-]+/g, '') // Remove markdown formatting
-    .replace(/\s+$/g, '') // Remove trailing whitespace
+  return text.replace(/[*#\-]+/g, '') // Removes **, _, #, >, -
 }
 
 /**
