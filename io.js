@@ -23,15 +23,10 @@ function cleanOutput(text) {
  */
 export async function processStream(stream) {
   let fullResponse = ''
-  let msg_color = colors.gray.bold
+  let msg_color = colors.blue.bold
 
   for await (const chunk of stream) {
     let content = chunk.content
-    if (content === '<think>') continue
-    if (content === '</think>') {
-      msg_color = colors.blue.bold
-      continue
-    }
     if (content) {
       content = cleanOutput(content)
       process.stdout.write(msg_color(content))

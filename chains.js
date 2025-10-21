@@ -1,5 +1,6 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { RunnableSequence } from '@langchain/core/runnables'
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { ChatGroq } from '@langchain/groq'
 import 'langsmith'
 import { wrapSDK } from 'langsmith/wrappers'
@@ -28,17 +29,12 @@ const q_prompt = new PromptTemplate({
 })
 
 // Model config is now easier to change via env or fallback
-const groq = wrapSDK(
-  new ChatGroq({
-    model: process.env.GROQ_MODEL || 'deepseek-r1-distill-llama-70b',
-    temperature: 0.3,
-    streaming: true,
-  })
-)
 
-const streaming_chain = RunnableSequence.from([
-  q_prompt,
-  groq,
-])
+const llm = new ChatGoogleGenerativeAI({
+  model: 'gemini-2.5-flash',
+  temperature: 0,
+  maxRetries: 2,
+})
+const streaming_chain = RunnableSequence.from([q_prompt, llm])
 
 export { streaming_chain }
