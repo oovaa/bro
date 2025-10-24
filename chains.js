@@ -1,9 +1,8 @@
+import { createAgent } from 'langchain'
 import { PromptTemplate } from '@langchain/core/prompts'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
-import { ChatGroq } from '@langchain/groq'
 import 'langsmith'
-import { wrapSDK } from 'langsmith/wrappers'
 
 // Improved: More flexible prompt and easier model config
 const q_template = `You are Omar, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
@@ -30,11 +29,18 @@ const q_prompt = new PromptTemplate({
 
 // Model config is now easier to change via env or fallback
 
-const llm = new ChatGoogleGenerativeAI({
+const model = new ChatGoogleGenerativeAI({
   model: 'gemini-2.5-flash',
   temperature: 0,
   maxRetries: 2,
 })
-const streaming_chain = RunnableSequence.from([q_prompt, llm])
+
+const agent = createAgent({
+  model,
+  tools: [],
+  prompt: q_prompt, // your custom prompt directly
+})
+
+const streaming_chain = RunnableSequence.from([q_prompt, model])
 
 export { streaming_chain }
