@@ -1,15 +1,16 @@
-import { createAgent } from 'langchain'
+import { createAgent, HumanMessage, SystemMessage } from 'langchain'
 import { PromptTemplate } from '@langchain/core/prompts'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import 'langsmith'
+import { MemorySaver } from '@langchain/langgraph'
+import { randomUUIDv5, randomUUIDv7 } from 'bun'
+
+const checkpointer = new MemorySaver()
 
 // Improved: More flexible prompt and easier model config
-const q_template = `You are Omar, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
+const q_template = `You are Bro, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
 
-# Context
-- Conversation History: {history}
-- Current Question: {question}
 
 # Instructions
 1. Provide a clear, concise answer to the current question
@@ -38,8 +39,34 @@ const model = new ChatGoogleGenerativeAI({
 const agent = createAgent({
   model,
   tools: [],
-  prompt: q_prompt, // your custom prompt directly
+  systemPrompt: q_template, // your custom prompt directly,
+  checkpointer,
 })
+
+const messages = {
+  messages: [{ role: 'user', content: 'Im omar' }],
+}
+
+const thread_id = randomUUIDv7()
+
+const config = {
+  configurable: { thread_id },
+}
+console.log((await agent.invoke(messages, config)).messages.at(-1)?.content)
+
+const messages2 = {
+  messages: [{ role: 'user', content: 'tell me about sudan?' }],
+}
+
+const stream = await agent.stream(messages2, {
+  ...config,
+  streamMode: 'messages',
+})
+// console.log(stream)
+
+for await (const chunk of stream) {
+  console.log(chunk[0].content)
+}
 
 const streaming_chain = RunnableSequence.from([q_prompt, model])
 
