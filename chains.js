@@ -4,12 +4,13 @@ import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import 'langsmith'
 import { MemorySaver } from '@langchain/langgraph'
-import { randomUUIDv5, randomUUIDv7 } from 'bun'
+import {  randomUUIDv7 } from 'bun'
 
 const checkpointer = new MemorySaver()
 
 // Improved: More flexible prompt and easier model config
 const q_template = `You are Bro, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
+
 
 
 # Instructions
@@ -23,6 +24,7 @@ const q_template = `You are Bro, a friendly and helpful assistant. Your response
 
 Response:`
 
+
 const q_prompt = new PromptTemplate({
   template: q_template,
   inputVariables: ['history', 'question'],
@@ -30,44 +32,44 @@ const q_prompt = new PromptTemplate({
 
 // Model config is now easier to change via env or fallback
 
-const model = new ChatGoogleGenerativeAI({
+export const model = new ChatGoogleGenerativeAI({
   model: 'gemini-2.5-flash',
   temperature: 0,
   maxRetries: 2,
 })
 
-const agent = createAgent({
+export const agent = createAgent({
   model,
   tools: [],
   systemPrompt: q_template, // your custom prompt directly,
   checkpointer,
 })
 
-const messages = {
-  messages: [{ role: 'user', content: 'Im omar' }],
-}
+// const messages = {
+//   messages: [{ role: 'user', content: 'Im omar' }],
+// }
 
 const thread_id = randomUUIDv7()
 
 const config = {
   configurable: { thread_id },
 }
-console.log((await agent.invoke(messages, config)).messages.at(-1)?.content)
 
-const messages2 = {
-  messages: [{ role: 'user', content: 'tell me about sudan?' }],
-}
+// console.log((awa
+// it agent.invoke(messages, config)).messages.at(-1)?.content)
 
-const stream = await agent.stream(messages2, {
-  ...config,
-  streamMode: 'messages',
-})
-// console.log(stream)
+// const messages2 = {
+//   messages: [{ role: 'user', content: 'tell me about sudan?' }],
+// }
 
-for await (const chunk of stream) {
-  console.log(chunk[0].content)
-}
+// const stream = await agent.stream(messages2, {
+//   ...config,
+//   streamMode: 'messages', /// important
+// })
+// // console.log(stream)
 
-const streaming_chain = RunnableSequence.from([q_prompt, model])
+// for await (const chunk of stream) {
+//   console.log(chunk[0].content)
+// }
 
-export { streaming_chain }
+// next step implemnt tool calling
