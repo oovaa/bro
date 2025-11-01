@@ -12,4 +12,4 @@ SHELL ["/bin/bash", "-c"]
 
 # This command will now be run with bash,
 # which understands the "[[" syntax in your script
-RUN . ./install ${key}
+RUN . ./install
