@@ -13,7 +13,7 @@ ENV PATH="/root/.bun/bin:${PATH}"
 # ---
 
 # Now this command will find 'bun' in the PATH
-RUN bun install --production
+RUN bun install
 
 # This command will also have bun in its PATH
 RUN ./install ${key}
