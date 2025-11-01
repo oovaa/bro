@@ -6,6 +6,8 @@ WORKDIR /cli
 
 COPY . .
 
+RUN apt update; apt install curl unzip -y
+
 # Install bun
 RUN curl -fsSL https://bun.com/install | bash
 
@@ -13,7 +15,7 @@ RUN curl -fsSL https://bun.com/install | bash
 # Add bun's bin directory to the PATH for all subsequent commands
 # ENV PATH="/root/.bun/bin:${PATH}"
 # ---
-RUN  ~/.bashrc
+RUN  source /root/.bashrc 
 
 # Now this command will find 'bun' in the PATH
 RUN bun install
