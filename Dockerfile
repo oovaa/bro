@@ -1,5 +1,7 @@
 FROM ubuntu
 
+SHELL ["/bin/bash", "-c"]
+
 WORKDIR /cli
 
 COPY . .
@@ -9,8 +11,9 @@ RUN curl -fsSL https://bun.com/install | bash
 
 # --- THIS IS THE FIX ---
 # Add bun's bin directory to the PATH for all subsequent commands
-ENV PATH="/root/.bun/bin:${PATH}"
+# ENV PATH="/root/.bun/bin:${PATH}"
 # ---
+RUN   exec /home/${USER}/.local/bin/
 
 # Now this command will find 'bun' in the PATH
 RUN bun install
