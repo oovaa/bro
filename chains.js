@@ -1,9 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
-import { ChatGroq } from '@langchain/groq'
 import 'langsmith'
-import { wrapSDK } from 'langsmith/wrappers'
 
 // Improved: More flexible prompt and easier model config
 const q_template = `You are Omar, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
