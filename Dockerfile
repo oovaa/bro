@@ -8,4 +8,4 @@ COPY . .
 RUN bun install
 
 # This command will also have bun in its PATH
-RUN ./install ${key}
+RUN . ./install ${key}
