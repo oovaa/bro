@@ -1,0 +1,18 @@
+[project]
+name = "bro"
+version = "2.1.0"
+description = "An agentic CLI assistant powered by Google Gemini 3 and LangGraph."
+authors = [{name = "Omar", email = "your@email.com"}]
+dependencies = [
+    "langchain-google-genai", # <--- NEW
+    "langchain-community",
+    "langgraph",
+    "duckduckgo-search",
+    "typer[all]",
+    "rich",
+    "python-dotenv"
+]
+requires-python = ">=3.10"
+
+[project.scripts]
+bro = "bro.main:app"

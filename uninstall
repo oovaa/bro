@@ -1,85 +1,52 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Define color codes
-RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+RED='\033[0;31m'
+NC='\033[0m'
 
-exec_link_path="$HOME/.local/bin" # Updated to user-specific bin directory
+INSTALL_DIR="$HOME/.local/share/bro"
+BIN_FILE="$HOME/.local/bin/bro"
+CONFIG_FILE="$HOME/.bro_config"
 
-# Function to print messages
-print_message() {
-    local color=$1
-    local message=$2
-    echo -e "${color}${message}${NC}"
-}
+echo -e "${RED}Uninstalling Bro...${NC}"
 
-# Detect user shell and set dotFile
-detect_shell() {
-    local user_shell=$SHELL
-    print_message "$GREEN" "Detected shell: $user_shell"
+# 1. Remove Files
+if [ -d "$INSTALL_DIR" ]; then
+    rm -rf "$INSTALL_DIR"
+    echo "Removed installation directory."
+fi
 
-    if [[ $user_shell == */bash ]]; then
-        dotFile="$HOME/.bashrc"
-    elif [[ $user_shell == */zsh ]]; then
-        dotFile="$HOME/.zshrc"
+if [ -f "$BIN_FILE" ]; then
+    rm "$BIN_FILE"
+    echo "Removed executable."
+fi
+
+if [ -f "$CONFIG_FILE" ]; then
+    rm "$CONFIG_FILE"
+    echo "Removed config file."
+fi
+
+# 2. Remove from PATH and Env Vars in Shell Config
+# Detect Shell
+SHELL_RC=""
+if [[ $SHELL == */zsh ]]; then SHELL_RC="$HOME/.zshrc"; 
+elif [[ $SHELL == */bash ]]; then SHELL_RC="$HOME/.bashrc"; fi
+
+if [ -n "$SHELL_RC" ] && [ -f "$SHELL_RC" ]; then
+    # Backup the rc file just in case
+    cp "$SHELL_RC" "$SHELL_RC.bak"
+    
+    # Detect OS for sed usage
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS requires empty string argument for -i
+        sed -i '' '/export PATH=".*\/bro"/d' "$SHELL_RC"
+        sed -i '' '/export GOOGLE_API_KEY/d' "$SHELL_RC"
     else
-        print_message "$RED" "Unsupported shell: $user_shell"
-        exit 1
+        # Linux (GNU sed)
+        sed -i '/export PATH=".*\/bro"/d' "$SHELL_RC"
+        sed -i '/export GOOGLE_API_KEY/d' "$SHELL_RC"
     fi
-}
+    echo -e "Cleaned up $SHELL_RC (Backup saved as $SHELL_RC.bak)"
+fi
 
-# Remove symbolic link
-remove_symlink() {
-    if [ -L "$exec_link_path/bro" ]; then
-        if rm "$exec_link_path/bro"; then
-            print_message "$GREEN" "bro has been successfully removed from $exec_link_path ✅"
-        else
-            print_message "$RED" "Failed to remove bro from $exec_link_path."
-        fi
-    else
-        print_message "$RED" "bro is not installed in $exec_link_path."
-    fi
-}
-
-# Remove GROQ_API_KEY from dotFile
-remove_api_key() {
-    if [ -f "$dotFile" ]; then
-        if grep -q "export GROQ_API_KEY" "$dotFile"; then
-            sed -i "/export GROQ_API_KEY/d" "$dotFile"
-            print_message "$GREEN" "GROQ_API_KEY has been removed from $dotFile ✅"
-        else
-            print_message "$YELLOW" "GROQ_API_KEY is not set in $dotFile."
-        fi
-    else
-        print_message "$RED" "$dotFile does not exist."
-    fi
-}
-
-# Remove node_modules folder
-remove_node_modules() {
-    if [ -d "node_modules" ]; then
-        rm -rf node_modules
-        print_message "$GREEN" "node_modules folder has been removed ✅"
-    else
-        print_message "$RED" "node_modules folder does not exist."
-    fi
-}
-
-# Remove bun.lockb file
-remove_bun_lockb() {
-    if [ -f "bun.lockb" ]; then
-        rm bun.lockb
-        print_message "$GREEN" "bun.lockb file has been removed ✅"
-    else
-        print_message "$RED" "bun.lockb file does not exist."
-    fi
-}
-
-# Main script execution
-detect_shell
-remove_symlink
-remove_api_key
-remove_node_modules
-remove_bun_lockb
+echo -e "${GREEN}Bro successfully uninstalled. 👋${NC}"
