@@ -1,6 +1,7 @@
 import os
 import typer
 import asyncio
+from typing import Optional
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -13,35 +14,13 @@ from bro.agent import get_agent_graph
 # Load env vars
 load_dotenv(os.path.expanduser("~/.bro_config"))
 
-app = typer.Typer(help="Bro: Your Agentic AI Assistant")
+# We use add_completion=False to keep the help output clean
+app = typer.Typer(add_completion=False)
 console = Console()
 
 
-def print_stream(graph, user_input: str, thread_id: str = "default"):
-    config = {"configurable": {"thread_id": thread_id}}
-
-    # Use a Spinner to show activity
-    with Live(console=console, refresh_per_second=10) as live:
-        live.update(Panel("Thinking...", title="Gemini 3", border_style="blue"))
-
-        try:
-            async_generator = graph.stream(
-                {"messages": [HumanMessage(content=user_input)]},
-                config=config,
-                stream_mode="updates",
-            )
-
-            messages_batch = asyncio.run(process_stream(async_generator, live))
-
-            if messages_batch:
-                live.stop()
-                console.print(Markdown(messages_batch))
-
-        except Exception as e:
-            live.update(Panel(f"[red]Error: {str(e)}[/red]", title="Error"))
-
-
 async def process_stream(generator, live_display):
+    """Helper to process the async stream from LangGraph."""
     final_text = ""
     async for update in generator:
         for node, values in update.items():
@@ -69,9 +48,35 @@ async def process_stream(generator, live_display):
     return final_text
 
 
-@app.command()
-def interactive():
-    """Start an interactive chat session."""
+def run_query(question: str):
+    """Runs a single query and prints the output."""
+    try:
+        graph = get_agent_graph()
+
+        # Use a Live display for the spinner
+        with Live(console=console, refresh_per_second=10) as live:
+            live.update(Panel("Thinking...", title="Gemini 3", border_style="blue"))
+
+            async_generator = graph.stream(
+                {"messages": [HumanMessage(content=question)]}, stream_mode="updates"
+            )
+
+            # Run async loop
+            messages_batch = asyncio.run(process_stream(async_generator, live))
+
+            if messages_batch:
+                live.stop()
+                console.print(Markdown(messages_batch))
+
+    except ValueError as e:
+        console.print(f"[red]Configuration Error:[/red] {e}")
+        console.print("Run [bold]./install <API_KEY>[/bold] to fix.")
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+
+
+def run_interactive():
+    """Runs the interactive chat loop."""
     console.clear()
     console.print(
         Panel.fit(
@@ -81,11 +86,11 @@ def interactive():
     )
 
     try:
-        graph = get_agent_graph()
+        # Initialize graph once to check config
+        get_agent_graph()
     except ValueError as e:
         console.print(f"[red]{e}[/red]")
-        console.print("Please run [bold]./install <GOOGLE_API_KEY>[/bold] first.")
-        raise typer.Exit()
+        return
 
     while True:
         try:
@@ -93,23 +98,33 @@ def interactive():
             if not user_input:
                 continue
             if user_input.lower() in ["exit", "quit"]:
+                console.print("[dim]Goodbye![/dim]")
                 break
 
-            print_stream(graph, user_input)
+            run_query(user_input)
             console.print()
 
         except KeyboardInterrupt:
+            console.print("\n[dim]Goodbye![/dim]")
             break
 
 
 @app.command()
-def ask(question: str):
-    """Ask a single question."""
-    try:
-        graph = get_agent_graph()
-        print_stream(graph, question)
-    except Exception as e:
-        console.print(f"[red]Error: {e}[/red]")
+def main(
+    question: Optional[str] = typer.Argument(
+        None, help="Optional question to ask immediately."
+    )
+):
+    """
+    Bro: Your Agentic AI Assistant.
+
+    Run without arguments for Interactive Mode.
+    Run with a question for Immediate Mode.
+    """
+    if question:
+        run_query(question)
+    else:
+        run_interactive()
 
 
 if __name__ == "__main__":
