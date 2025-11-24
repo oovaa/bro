@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-# Set the executable permission for the ccmdr script
-chmod +x ccmdr
-
-# Create a symbolic link to the ccmdr script in the /usr/local/bin directory
-sudo ln -s "$(pwd)/ccmdr" /usr/local/bin/
