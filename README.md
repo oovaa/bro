@@ -97,7 +97,35 @@ Removes:
 
 ## Contributing
 
-Pull requests and issues are welcome! Please open an issue for bugs or feature requests.
+We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+### Quick Start for Contributors
+
+1. **Fork the repository** and clone your fork
+2. **Install dependencies**: `bun install`
+3. **Make your changes** and test them locally
+4. **Submit a pull request** with a clear description
+
+### Ways to Contribute
+
+- 🐛 **Report bugs** by opening an issue with detailed information
+- 💡 **Suggest features** or enhancements
+- 📝 **Improve documentation** (README, code comments, guides)
+- 🔧 **Submit pull requests** to fix issues or add features
+- ⭐ **Star the repository** to show your support
+
+### Development Guidelines
+
+Please read our [Contributing Guide](docs/CONTRIBUTING.md) for detailed information on:
+- Development setup and workflow
+- Code style and standards
+- Commit message conventions
+- Pull request process
+- Testing your changes
+
+### Code of Conduct
+
+Be respectful and inclusive. We're committed to providing a welcoming environment for everyone.
 
 ## Supported Platforms
 
