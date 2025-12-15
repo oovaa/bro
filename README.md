@@ -1,8 +1,6 @@
 # Bro: Groq & DeepSeek AI Assistant
 
-This CLI tool provides an AI assistant powered by Groq's API and DeepSeek models through the Langchain framework.
-
-![alt](./logo.png)
+This CLI tool provides an AI assistant powered by Groq's API and openAI OSS models through the Langchain 
 
 ## Table of Contents
 
