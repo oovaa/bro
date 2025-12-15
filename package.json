@@ -3,11 +3,13 @@
   "module": "bro",
   "version": "1.4",
   "dependencies": {
-    "@langchain/community": "^1.0.0",
-    "@langchain/core": "^1.0.1",
+    "@langchain/community": "^1.1.0",
+    "@langchain/core": "^1.1.5",
     "@langchain/google-genai": "^1.0.0",
+    "@langchain/groq": "^1.0.2",
     "@langchain/tavily": "^1.0.0",
     "colors": "^1.4.0",
+    "duck-duck-scrape": "^2.2.7",
     "langchain": "^1.0.1",
     "zod": "^4.1.12"
   },
