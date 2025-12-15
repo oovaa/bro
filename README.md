@@ -1,8 +1,6 @@
-# Bro: Groq & DeepSeek AI Assistant
+# Bro: Groq-Powered CLI Assistant
 
-This CLI tool provides an AI assistant powered by Groq's API and DeepSeek models through the Langchain framework.
-
-![alt](./logo.png)
+Bro is a lightweight CLI assistant powered by Groq via LangChain, built on Bun.
 
 ## Table of Contents
 
@@ -45,16 +43,18 @@ To install the CLI tool:
     ```
     Install Bun from [bun.sh](https://bun.sh/docs/installation) if needed.
 
-4. Run the install script with your Groq API key:
-    ```sh
-    ./install <GROQ_API_KEY>
-    ```
+4. Run the install script:
+  ```sh
+  ./install <GROQ_API_KEY> [TAVILY_API_KEY]
+  ```
+  - `GROQ_API_KEY` is required.
+  - `TAVILY_API_KEY` is optional (enables higher-quality web search).
 
 ## Updating
 
 To update:
 ```sh
-./update
+git pull origin main
 ```
 
 ## Usage
@@ -66,15 +66,14 @@ bro
 
 ### Non-Interactive Mode
 ```sh
-bro "tell me about quantum computing"  # Regular response
-bro -s "explain AI safety"             # Stream response (no thinking output)
+bro "tell me about quantum computing"
 ```
-- The `-s` flag skips the "thinking" phase and streams only the final answer.
 
 ## Configuration
 
 The install script automatically sets up:
 - `GROQ_API_KEY` in your shell config
+- `TAVILY_API_KEY` in your shell config (optional)
 - Symbolic link in `~/.local/bin`
 - Required dependencies
 
@@ -97,7 +96,35 @@ Removes:
 
 ## Contributing
 
-Pull requests and issues are welcome! Please open an issue for bugs or feature requests.
+We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+### Quick Start for Contributors
+
+1. **Fork the repository** and clone your fork
+2. **Install dependencies**: `bun install`
+3. **Make your changes** and test them locally
+4. **Submit a pull request** with a clear description
+
+### Ways to Contribute
+
+- 🐛 **Report bugs** by opening an issue with detailed information
+- 💡 **Suggest features** or enhancements
+- 📝 **Improve documentation** (README, code comments, guides)
+- 🔧 **Submit pull requests** to fix issues or add features
+- ⭐ **Star the repository** to show your support
+
+### Development Guidelines
+
+Please read our [Contributing Guide](docs/CONTRIBUTING.md) for detailed information on:
+- Development setup and workflow
+- Code style and standards
+- Commit message conventions
+- Pull request process
+- Testing your changes
+
+### Code of Conduct
+
+Be respectful and inclusive. We're committed to providing a welcoming environment for everyone.
 
 ## Supported Platforms
 
