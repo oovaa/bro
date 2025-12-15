@@ -3,9 +3,9 @@ import 'colors'
 import { dontThink, processStream } from './io'
 
 /**
- * Handles non-interactive mode with streaming and error feedback
- * @param {string[]} args
- * @returns {Promise<string>}
+ * Handles non-interactive mode with streaming and error feedback.
+ * @param {string[]} args - Command line arguments.
+ * @returns {Promise<void>}
  */
 export async function handle_args(args) {
   if (!args || args.length < 3) {

@@ -1,23 +1,13 @@
 #!/usr/bin/env bun
-
-// @ts-check
-
 import { rl } from './io.js'
 import { handle_args } from './nonInteractive.js'
 import { call_agent } from './agent.js'
+import { end, setup } from './setup.js'
 
-/**
- * handle quiting with a success status code
- */
-function end() {
-  rl.close()
-  console.timeEnd('Goodbye!'.gray)
-  process.exit(0)
-}
+setup()
 
 // check non interactive question and handle it
 if (process.argv.length > 2) {
-  console.time('Goodbye!'.gray)
   await handle_args(process.argv)
   end()
 }
@@ -27,6 +17,9 @@ if (process.argv.length > 2) {
  * @returns {Promise<void>}
  */
 async function run() {
+  /**
+   * Prompts the user for input and processes the response.
+   */
   async function ask() {
     rl.question('You: ', async (msg) => {
       msg = msg.trim()
@@ -49,21 +42,6 @@ async function run() {
 
   // Start the asking loop
   ask()
-}
-
-// Register signal handlers
-;['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'].forEach((signal) => {
-  rl.on(signal, () => {
-    end()
-  })
-})
-
-// help flag
-if (process.argv.includes('--help') || process.argv.includes('-h')) {
-  console.log(
-    `Usage: bro [question] [-s]\n\nInteractive: bro\nNon-interactive: bro \"your question\" [-s]\n\nFlags:\n  -s   Stream response only (no thinking phase)\n  -h, --help   Show this help message`
-  )
-  process.exit(0)
 }
 
 // Run the application

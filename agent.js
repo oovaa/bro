@@ -36,23 +36,13 @@ const config = {
   configurable: { thread_id },
 }
 
-// export const call_agent = async (question) => {
-//   const messages = {
-//     messages: [{ role: 'user', content: question }],
-//   }
-
-//   const stream = await agent.stream(messages, {
-//     ...config,
-//     streamMode: 'messages', /// important
-//   })
-
-//   for await (const chunk of stream) {
-//     // await Bun.write(Bun.stdout,chunk)
-//     console.log(chunk)
-//   }
-//   await Bun.write(Bun.stdout,'\n')
-// }
-
+/**
+ * Calls the agent with a question and streams the response to stdout.
+ * Handles tool execution notifications and formats output for CLI.
+ *
+ * @param {string} question - The user's question.
+ * @returns {Promise<void>}
+ */
 export const call_agent = async (question) => {
   const messages = { messages: [{ role: 'user', content: question }] }
 
@@ -64,8 +54,6 @@ export const call_agent = async (question) => {
   for await (const chunk of stream) {
     const [nodeName, message] = chunk
 
-    //console.log('node name :', nodeName) // "model", "tools", etc.
-    //console.log('message :', message) // AIMessage, ToolMessage, etc.
     if (message.name == 'tools')
       await Bun.write(Bun.stdout, colors.dim.green('calling a tool...\n'))
     else {
@@ -74,7 +62,3 @@ export const call_agent = async (question) => {
   }
   await Bun.write(Bun.stdout, '\n')
 }
-
-// await call_agent('hi my name is omar')
-// await call_agent('what is the latest bun versoin')
-// await call_agent('what is my name ?')

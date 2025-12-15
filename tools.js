@@ -1,6 +1,11 @@
 import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search'
 import { TavilySearch } from '@langchain/tavily'
 
+/**
+ * Returns a configured web search tool.
+ * Uses TavilySearch if TAVILY_API_KEY is present, otherwise falls back to DuckDuckGoSearch.
+ * @returns {TavilySearch | DuckDuckGoSearch} The search tool instance.
+ */
 export const web_search_tool = () => {
   if (Bun.env.TAVILY_API_KEY) {
     return new TavilySearch({
