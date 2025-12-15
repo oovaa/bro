@@ -54,7 +54,7 @@ To install the CLI tool:
 
 To update:
 ```sh
-./update
+git pull origin main
 ```
 
 ## Usage
