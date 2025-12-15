@@ -134,6 +134,7 @@ If you find a bug or have a feature request, please [open an issue](https://gith
 - `bug`: Something isn't working
 - `enhancement`: New feature or request
 - `documentation`: Improvements or additions to documentation
+- `question`: Questions about usage or implementation
 - `good first issue`: Good for newcomers
 - `help wanted`: Extra attention is needed
 
