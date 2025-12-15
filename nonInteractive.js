@@ -1,6 +1,5 @@
 import { call_agent } from './agent'
 import 'colors'
-import { dontThink, processStream } from './io'
 
 /**
  * Handles non-interactive mode with streaming and error feedback.

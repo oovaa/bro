@@ -65,34 +65,57 @@ else
     exit 1
 fi
 
-# Ask for GOOGLE_API_KEY if not provided as an argument
-if [ $# -eq 1 ]; then
-    GOOGLE_API_KEY=$1
+# Ask for GROQ_API_KEY if not provided as an argument
+if [ $# -ge 1 ]; then
+    GROQ_API_KEY=$1
 else
-    echo -e "${YELLOW}Please provide your GOOGLE_API_KEY:${NC}"
-    read -r GOOGLE_API_KEY
+    echo -e "${YELLOW}Please provide your GROQ_API_KEY:${NC}"
+    read -r GROQ_API_KEY
 fi
 
-# Set GOOGLE_API_KEY as an environment variable in the dotFile
-if [ -n "$GOOGLE_API_KEY" ]; then
-    echo -e "${GREEN}Setting GOOGLE_API_KEY in $dotFile${NC}"
+# Ask for TAVILY_API_KEY (optional)
+if [ $# -ge 2 ]; then
+    TAVILY_API_KEY=$2
+else
+    echo -e "${YELLOW}Please provide your TAVILY_API_KEY (optional, press Enter to skip):${NC}"
+    read -r TAVILY_API_KEY
+fi
+
+# Set GROQ_API_KEY as an environment variable in the dotFile
+if [ -n "$GROQ_API_KEY" ]; then
+    echo -e "${GREEN}Setting GROQ_API_KEY in $dotFile${NC}"
 
     # Update the dotFile
-    if grep -q "export GOOGLE_API_KEY" "$dotFile"; then
+    if grep -q "export GROQ_API_KEY" "$dotFile"; then
         # Update the existing value
-        sed -i "s/export GOOGLE_API_KEY=.*/export GOOGLE_API_KEY=\"$GOOGLE_API_KEY\"/" "$dotFile"
+        sed -i "s/export GROQ_API_KEY=.*/export GROQ_API_KEY=\"$GROQ_API_KEY\"/" "$dotFile"
     else
         # Add the new value
-        echo "export GOOGLE_API_KEY=\"$GOOGLE_API_KEY\"" >> "$dotFile"
+        echo "export GROQ_API_KEY=\"$GROQ_API_KEY\"" >> "$dotFile"
     fi
-
-    # Source the dotFile to apply changes
-    if [[ $user_shell == */zsh ]]; then
-        exec zsh
-    else
-        source "$dotFile"
-    fi
-    echo -e "${GREEN}GOOGLE_API_KEY set successfully ✅${NC}"
+    echo -e "${GREEN}GROQ_API_KEY set successfully ✅${NC}"
 else
-    echo -e "${YELLOW}You didn't provide a GOOGLE_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
+    echo -e "${YELLOW}You didn't provide a GROQ_API_KEY. Make sure you set it manually in the $dotFile file, otherwise you can't use bro.${NC}"
+fi
+
+# Set TAVILY_API_KEY as an environment variable in the dotFile
+if [ -n "$TAVILY_API_KEY" ]; then
+    echo -e "${GREEN}Setting TAVILY_API_KEY in $dotFile${NC}"
+
+    # Update the dotFile
+    if grep -q "export TAVILY_API_KEY" "$dotFile"; then
+        # Update the existing value
+        sed -i "s/export TAVILY_API_KEY=.*/export TAVILY_API_KEY=\"$TAVILY_API_KEY\"/" "$dotFile"
+    else
+        # Add the new value
+        echo "export TAVILY_API_KEY=\"$TAVILY_API_KEY\"" >> "$dotFile"
+    fi
+    echo -e "${GREEN}TAVILY_API_KEY set successfully ✅${NC}"
+fi
+
+# Source the dotFile to apply changes
+if [[ $user_shell == */zsh ]]; then
+    exec zsh
+else
+    source "$dotFile"
 fi

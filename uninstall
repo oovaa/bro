@@ -44,13 +44,20 @@ remove_symlink() {
 }
 
 # Remove GROQ_API_KEY from dotFile
-remove_api_key() {
+remove_api_keys() {
     if [ -f "$dotFile" ]; then
         if grep -q "export GROQ_API_KEY" "$dotFile"; then
             sed -i "/export GROQ_API_KEY/d" "$dotFile"
             print_message "$GREEN" "GROQ_API_KEY has been removed from $dotFile ✅"
         else
             print_message "$YELLOW" "GROQ_API_KEY is not set in $dotFile."
+        fi
+
+        if grep -q "export TAVILY_API_KEY" "$dotFile"; then
+            sed -i "/export TAVILY_API_KEY/d" "$dotFile"
+            print_message "$GREEN" "TAVILY_API_KEY has been removed from $dotFile ✅"
+        else
+            print_message "$YELLOW" "TAVILY_API_KEY is not set in $dotFile."
         fi
     else
         print_message "$RED" "$dotFile does not exist."
@@ -67,19 +74,22 @@ remove_node_modules() {
     fi
 }
 
-# Remove bun.lockb file
-remove_bun_lockb() {
+# Remove bun.lockb or bun.lock file
+remove_bun_lock() {
     if [ -f "bun.lockb" ]; then
         rm bun.lockb
         print_message "$GREEN" "bun.lockb file has been removed ✅"
+    elif [ -f "bun.lock" ]; then
+        rm bun.lock
+        print_message "$GREEN" "bun.lock file has been removed ✅"
     else
-        print_message "$RED" "bun.lockb file does not exist."
+        print_message "$RED" "bun.lock/bun.lockb file does not exist."
     fi
 }
 
 # Main script execution
 detect_shell
 remove_symlink
-remove_api_key
-remove_node_modules
-remove_bun_lockb
+remove_api_keys
+# remove_node_modules
+remove_bun_lock
