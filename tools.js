@@ -1,10 +1,15 @@
+import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search'
 import { TavilySearch } from '@langchain/tavily'
-import { createAgent } from 'langchain'
 
-export const tavilyTool = new TavilySearch({
-  maxResults: 5,
-  apiKey: Bun.env.TAVILY_API_KEY,
-})
+export const web_search_tool = () => {
+  if (Bun.env.TAVILY_API_KEY) {
+    return new TavilySearch({
+      // goooooooood results
+      maxResults: 5,
+      apiKey: Bun.env.TAVILY_API_KEY,
+    })
+  } else return new DuckDuckGoSearch() // old results
+}
 
 // const input = {
 //   messages: [

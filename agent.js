@@ -2,7 +2,7 @@ import { createAgent } from 'langchain'
 import { MemorySaver } from '@langchain/langgraph'
 import { randomUUIDv7 } from 'bun'
 import { llm } from './llm'
-import { tavilyTool } from './tools'
+import { web_search_tool } from './tools'
 import colors from 'colors'
 
 const checkpointer = new MemorySaver()
@@ -25,7 +25,7 @@ Response:`
 
 export const agent = createAgent({
   model: llm,
-  tools: [tavilyTool],
+  tools: [web_search_tool()],
   systemPrompt: system_prompt, // your custom prompt directly,
   checkpointer,
 })
