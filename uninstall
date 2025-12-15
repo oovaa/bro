@@ -91,5 +91,5 @@ remove_bun_lock() {
 detect_shell
 remove_symlink
 remove_api_keys
-# remove_node_modules
+remove_node_modules
 remove_bun_lock
