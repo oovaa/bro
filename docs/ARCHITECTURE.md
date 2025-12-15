@@ -1,11 +1,11 @@
 # Bro Project Architecture
 
-Bro is a CLI AI assistant powered by Groq's API and DeepSeek models, built with Bun and Langchain. This document describes the main components and their interactions.
+Bro is a CLI assistant powered by Groq via LangChain, built with Bun. This document describes the main components and their interactions.
 
 ## Overview
 
 - **Language:** JavaScript (ESNext), Bun runtime
-- **AI Models:** Groq API, DeepSeek via Langchain
+- **AI Models:** Groq API via LangChain
 - **CLI Interface:** Interactive and non-interactive modes
 - **Configuration:** Shell environment variables, symbolic link in `~/.local/bin`
 
@@ -18,22 +18,23 @@ Bro is a CLI AI assistant powered by Groq's API and DeepSeek models, built with 
 
 ### 2. Streaming & Output (`io.js`)
 - Manages readline interface for CLI
-- Processes and colors streaming AI responses
-- Cleans Markdown formatting for terminal display
+- Handles terminal input/output
 
-### 3. AI Chain (`chains.js`)
-- Defines prompt template and instructions for the assistant
-- Configures Groq/DeepSeek model via Langchain
-- Handles streaming responses
+### 3. Agent + Model (`agent.js`, `llm.js`)
+- `llm.js` configures the Groq chat model
+- `agent.js` wires the model to tools and handles streaming output
 
 ### 4. Non-Interactive Mode (`nonInteractive.js`)
 - Parses CLI arguments for direct questions
-- Supports streaming-only output with `-s` flag
 - Handles errors and usage instructions
 
-### 5. Install/Uninstall Scripts
-- `install`: Sets up dependencies, symbolic link, and API key in shell config
-- `uninstall`: Removes symbolic link, environment variables, and dependencies
+### 5. Web Search Tool (`tools.js`)
+- Provides a web search tool used by the agent
+- Uses Tavily when `TAVILY_API_KEY` is set; otherwise falls back to DuckDuckGo
+
+### 6. Install/Uninstall Scripts
+- `install`: Installs dependencies, creates a `bro` symlink in `~/.local/bin`, and sets shell env vars
+- `uninstall`: Removes the symlink and removes related shell env vars
 
 ### 6. Update Script
 - Pulls latest changes from the repository
@@ -43,21 +44,22 @@ Bro is a CLI AI assistant powered by Groq's API and DeepSeek models, built with 
 
 1. User runs `bro` (interactive) or `bro "question" [-s]` (non-interactive)
 2. CLI parses input and invokes the appropriate handler
-3. Input is sent to the AI chain (Langchain + Groq/DeepSeek)
-4. Streaming response is processed and displayed in the terminal
+3. Input is sent to the agent (LangChain + Groq)
+4. The response is streamed to the terminal
 5. Session history is updated for context
 
 ## Extensibility
 
-- Add new models or chains in `chains.js`
+- Swap models by adjusting configuration in `llm.js`
 - Extend CLI flags and options in `bro`
 - Customize prompts and output formatting
 
 ## Directory Structure
 
-- `bro/` - Main CLI script
+- `bro` - Main CLI entrypoint
 - `io.js` - CLI I/O and output processing
-- `chains.js` - AI chain and prompt logic
+- `llm.js` - LLM configuration
+- `agent.js` - Agent wiring, tools, and streaming
 - `nonInteractive.js` - Non-interactive CLI handler
 - `install`, `uninstall`, `update` - Shell scripts for setup and maintenance
 - `docs/` - Documentation

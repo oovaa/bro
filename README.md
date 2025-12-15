@@ -1,6 +1,6 @@
-# Bro: Groq & DeepSeek AI Assistant
+# Bro: Groq-Powered CLI Assistant
 
-This CLI tool provides an AI assistant powered by Groq's API and openAI OSS models through the Langchain 
+Bro is a lightweight CLI assistant powered by Groq via LangChain, built on Bun.
 
 ## Table of Contents
 
@@ -43,10 +43,12 @@ To install the CLI tool:
     ```
     Install Bun from [bun.sh](https://bun.sh/docs/installation) if needed.
 
-4. Run the install script with your Groq API key:
-    ```sh
-    ./install <GROQ_API_KEY>
-    ```
+4. Run the install script:
+  ```sh
+  ./install <GROQ_API_KEY> [TAVILY_API_KEY]
+  ```
+  - `GROQ_API_KEY` is required.
+  - `TAVILY_API_KEY` is optional (enables higher-quality web search).
 
 ## Updating
 
@@ -64,15 +66,14 @@ bro
 
 ### Non-Interactive Mode
 ```sh
-bro "tell me about quantum computing"  # Regular response
-bro -s "explain AI safety"             # Stream response (no thinking output)
+bro "tell me about quantum computing"
 ```
-- The `-s` flag skips the "thinking" phase and streams only the final answer.
 
 ## Configuration
 
 The install script automatically sets up:
 - `GROQ_API_KEY` in your shell config
+- `TAVILY_API_KEY` in your shell config (optional)
 - Symbolic link in `~/.local/bin`
 - Required dependencies
 
