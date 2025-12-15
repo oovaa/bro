@@ -2,9 +2,9 @@
 
 // @ts-check
 
-import { processStream, rl } from './io.js'
+import { rl } from './io.js'
 import { handle_args } from './nonInteractive.js'
-import { streaming_chain } from './chains.js'
+import { call_agent } from './agent.js'
 
 /**
  * handle quiting with a success status code
@@ -27,9 +27,6 @@ if (process.argv.length > 2) {
  * @returns {Promise<void>}
  */
 async function run() {
-  let historyStr = ''
-  console.time('Goodbye!'.gray)
-
   async function ask() {
     rl.question('You: ', async (msg) => {
       msg = msg.trim()
@@ -41,16 +38,9 @@ async function run() {
         end()
       } else {
         try {
-          const stream = await streaming_chain.stream({
-            question: msg,
-            history: historyStr,
-          })
-
-          const response = await processStream(stream)
-
-          historyStr += `Human: ${msg}\nAI: ${response}\n`
+          await call_agent(msg)
         } catch (error) {
-          console.error('\nError:', error.message)
+          console.error('\nError:', error)
         }
         ask()
       }
@@ -64,7 +54,6 @@ async function run() {
 // Register signal handlers
 ;['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'].forEach((signal) => {
   rl.on(signal, () => {
-    console.log()
     end()
   })
 })
