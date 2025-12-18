@@ -21,23 +21,22 @@ async function run() {
    * Prompts the user for input and processes the response.
    */
   async function ask() {
-    rl.question('You: ', async (msg) => {
-      msg = msg.trim()
-      if (msg === '') {
-        ask()
-        return
-      }
-      if (msg.toLowerCase() === 'exit') {
+    while (true) {
+      const msg = await new Promise((resolve) => rl.question('You: ', resolve))
+      const trimmedMsg = msg.trim()
+      if (trimmedMsg === '') continue
+      if (trimmedMsg.toLowerCase() === 'exit') {
         end()
-      } else {
-        try {
-          await call_agent(msg)
-        } catch (error) {
-          console.error('\nError:', error)
-        }
-        ask()
+        break
       }
-    })
+      try {
+        await call_agent(trimmedMsg)
+      } catch (error) {
+        console.error(
+          '\nAn error occurred while processing your input. Please try again.'
+        )
+      }
+    }
   }
 
   // Start the asking loop
