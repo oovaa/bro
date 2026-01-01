@@ -3,6 +3,7 @@ import { rl } from './io.js'
 import { handle_args } from './nonInteractive.js'
 import { call_agent } from './agent.js'
 import { end, setup } from './setup.js'
+import { ui } from './ui'
 
 setup()
 
@@ -32,8 +33,9 @@ async function run() {
       try {
         await call_agent(trimmedMsg)
       } catch (error) {
-        console.error(
+        console.error(ui.error(
           '\nAn error occurred while processing your input. Please try again.'
+        )
         )
       }
     }

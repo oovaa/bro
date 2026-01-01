@@ -1,4 +1,5 @@
 import { rl } from './io'
+import { ui } from './ui'
 
 /**
  * Sets up the CLI environment, including signal handlers and help flag check.
@@ -6,16 +7,16 @@ import { rl } from './io'
 export function setup() {
   // count from start time
   console.time('Goodbye!'.gray)
-  // Register signal handlers
-  ;['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'].forEach((signal) => {
-    rl.on(signal, () => {
-      end()
+    // Register signal handlers
+    ;['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'].forEach((signal) => {
+      rl.on(signal, () => {
+        end()
+      })
     })
-  })
 
   // help flag
   if (process.argv.includes('--help') || process.argv.includes('-h')) {
-    console.log(
+    console.log(ui.warn(
       [
         'bro — Chat CLI',
         '',
@@ -31,12 +32,13 @@ export function setup() {
         '  bro "What is the capital of France?"',
       ].join('\n')
     )
+    )
     process.exit(0)
   }
 }
 
 /**
- * handle quiting with a success status code
+ * handle quitting with a success status code
  */
 export function end() {
   console.timeEnd('Goodbye!'.gray)

@@ -3,7 +3,8 @@ import { MemorySaver } from '@langchain/langgraph'
 import { randomUUIDv7 } from 'bun'
 import { llm } from './llm'
 import { web_search_tool } from './tools'
-import colors from 'colors'
+import ora from 'ora'
+import { ui } from './ui'
 
 const checkpointer = new MemorySaver()
 
@@ -46,6 +47,13 @@ const config = {
 export const call_agent = async (question) => {
   const messages = { messages: [{ role: 'user', content: question }] }
 
+  const ora_spinner = ora({
+    text: ui.thinking('Thinking..'),
+    isEnabled: Bun.stdout.isTTY
+  }).start()
+
+  let spinnerStopped = false
+
   const stream = await agent.stream(messages, {
     ...config,
     streamMode: 'messages', // Streams messages with content + tool_calls
@@ -54,10 +62,15 @@ export const call_agent = async (question) => {
   for await (const chunk of stream) {
     const [nodeName, message] = chunk
 
+    if (!spinnerStopped && message.name != 'tools') {
+      ora_spinner.stop()
+      spinnerStopped = true
+    }
+
     if (message.name == 'tools')
-      await Bun.write(Bun.stdout, colors.dim.green('calling a tool...\n'))
+      await Bun.write(Bun.stdout, ui.tool('calling a tool...\n'))
     else {
-      await Bun.write(Bun.stdout, colors.cyan.bold(nodeName.content))
+      await Bun.write(Bun.stdout, ui.answer(nodeName.content))
     }
   }
   await Bun.write(Bun.stdout, '\n')
