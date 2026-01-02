@@ -6,5 +6,5 @@ export const ui = {
   thinking: chalk.hex('#434c8e').italic,
   meta: chalk.hex('#bb9af7').underline,
   warn: chalk.hex('#ffae57').bold,
-  error: chalk.hex('#ff7a93').bold.underline.bold,
+  error: chalk.hex('#ff7a93').bold.underline,
 };
