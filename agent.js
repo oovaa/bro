@@ -62,12 +62,12 @@ export const call_agent = async (question) => {
   for await (const chunk of stream) {
     const [nodeName, message] = chunk
 
-    if (!spinnerStopped && message.name != 'tools') {
+    if (!spinnerStopped && message.name !== 'tools') {
       ora_spinner.stop()
       spinnerStopped = true
     }
 
-    if (message.name == 'tools')
+    if (message.name === 'tools')
       await Bun.write(Bun.stdout, ui.tool('calling a tool...\n'))
     else {
       await Bun.write(Bun.stdout, ui.answer(nodeName.content))
