@@ -14,35 +14,40 @@ if (process.argv.length > 2) {
 }
 
 /**
+ * Prompts the user for input and processes the response.
+ */
+function ask() {
+  return new Promise((resolve) => {
+    rl.question('You: ', resolve)
+  })
+}
+
+/**
  * Runs the chat CLI application with streaming
  * @returns {Promise<void>}
  */
 async function run() {
-  /**
-   * Prompts the user for input and processes the response.
-   */
-  async function ask() {
-    while (true) {
-      const msg = await new Promise((resolve) => rl.question('You: ', resolve))
-      const trimmedMsg = msg.trim()
-      if (trimmedMsg === '') continue
-      if (trimmedMsg.toLowerCase() === 'exit') {
-        end()
-        break
-      }
-      try {
-        await call_agent(trimmedMsg)
-      } catch (error) {
-        console.error(ui.error(
+  // Start the asking loop
+  while (true) {
+    const msg = await ask()
+    const trimmedMsg = msg.trim()
+    if (trimmedMsg === '') {
+      continue
+    }
+    if (trimmedMsg.toLowerCase() === 'exit') {
+      end()
+      break
+    }
+    try {
+      await call_agent(trimmedMsg)
+    } catch (error) {
+      console.error(
+        ui.error(
           '\nAn error occurred while processing your input. Please try again.'
         )
-        )
-      }
+      )
     }
   }
-
-  // Start the asking loop
-  ask()
 }
 
 // Run the application

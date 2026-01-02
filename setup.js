@@ -6,32 +6,33 @@ import { ui } from './ui'
  */
 export function setup() {
   // count from start time
-  console.time('Goodbye!'.gray)
-    // Register signal handlers
-    ;['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'].forEach((signal) => {
-      rl.on(signal, () => {
-        end()
-      })
+  console.time('Goodbye!')
+  // Register signal handlers
+  ;['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'].forEach((signal) => {
+    rl.on(signal, () => {
+      end()
     })
+  })
 
   // help flag
   if (process.argv.includes('--help') || process.argv.includes('-h')) {
-    console.log(ui.warn(
-      [
-        'bro — Chat CLI',
-        '',
-        'Usage:',
-        '  bro                 Start interactive chat',
-        '  bro your question  Ask a single question (non-interactive)',
-        '',
-        'Options:',
-        '  -h, --help      Show this help message',
-        '',
-        'Examples:',
-        '  bro',
-        '  bro "What is the capital of France?"',
-      ].join('\n')
-    )
+    console.log(
+      ui.warn(
+        [
+          'bro — Chat CLI',
+          '',
+          'Usage:',
+          '  bro                 Start interactive chat',
+          '  bro your question  Ask a single question (non-interactive)',
+          '',
+          'Options:',
+          '  -h, --help      Show this help message',
+          '',
+          'Examples:',
+          '  bro',
+          '  bro "What is the capital of France?"',
+        ].join('\n')
+      )
     )
     process.exit(0)
   }
@@ -41,7 +42,7 @@ export function setup() {
  * handle quitting with a success status code
  */
 export function end() {
-  console.timeEnd('Goodbye!'.gray)
+  console.timeEnd('Goodbye!')
   rl.close()
   process.exit(0)
 }
