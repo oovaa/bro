@@ -1,5 +1,5 @@
-import { rl } from './io'
-import { ui } from './ui'
+import { rl } from './io.js'
+import { ui } from './ui.js'
 
 /**
  * Sets up the CLI environment, including signal handlers and help flag check.

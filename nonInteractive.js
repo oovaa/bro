@@ -1,5 +1,5 @@
-import { call_agent } from './agent'
-import { ui } from './ui'
+import { call_agent } from './agent.js'
+import { ui } from './ui.js'
 
 /**
  * Handles non-interactive mode with streaming and error feedback.
