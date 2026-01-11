@@ -1,10 +1,10 @@
 import { createAgent } from 'langchain'
 import { MemorySaver } from '@langchain/langgraph'
 import { randomUUIDv7 } from 'bun'
-import { llm } from './llm'
-import { web_search_tool } from './tools'
+import { llm } from './llm.js'
+import { web_search_tool } from './tools.js'
 import ora from 'ora'
-import { ui } from './ui'
+import { ui } from './ui.js'
 
 const checkpointer = new MemorySaver()
 

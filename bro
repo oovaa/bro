@@ -3,7 +3,7 @@ import { rl } from './io.js'
 import { handle_args } from './nonInteractive.js'
 import { call_agent } from './agent.js'
 import { end, setup } from './setup.js'
-import { ui } from './ui'
+import { ui } from './ui.js'
 
 setup()
 
