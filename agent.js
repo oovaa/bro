@@ -49,7 +49,7 @@ export const call_agent = async (question) => {
 
   const ora_spinner = ora({
     text: ui.thinking('Thinking..'),
-    isEnabled: Bun.stdout.isTTY
+    isEnabled: Bun.stdout.isTTY,
   }).start()
 
   let spinnerStopped = false
