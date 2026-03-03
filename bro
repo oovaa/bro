@@ -28,26 +28,23 @@ function ask() {
  */
 async function run() {
   // Start the asking loop
-  while (true) {
-    const msg = await ask()
+  await rl.question('You:', async (msg) => {
     const trimmedMsg = msg.trim()
-    if (trimmedMsg === '') {
-      continue
-    }
-    if (trimmedMsg.toLowerCase() === 'exit') {
-      end()
-      break
-    }
+    if (trimmedMsg === '') return
+
+    if (trimmedMsg.toLowerCase() === 'exit') end()
+
     try {
       await call_agent(trimmedMsg)
     } catch (error) {
       console.error(
         ui.error(
-          '\nAn error occurred while processing your input. Please try again.'
-        )
+          '\nAn error occurred while processing your input. Please try again.',
+        ),
       )
     }
-  }
+    run()
+  })
 }
 
 // Run the application
