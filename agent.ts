@@ -1,4 +1,8 @@
-import { createAgent, modelFallbackMiddleware } from 'langchain'
+import {
+  createAgent,
+  createMiddleware,
+  modelFallbackMiddleware,
+} from 'langchain'
 import { MemorySaver } from '@langchain/langgraph'
 import { randomUUIDv7 } from 'bun'
 import { web_search_tool } from './tools'
@@ -8,9 +12,7 @@ import { ui } from './ui'
 const checkpointer = new MemorySaver()
 
 // Improved: More flexible prompt and easier model config
-const system_prompt = `You are Bro, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
-
-
+const system_prompt: string = `You are Bro, a friendly and helpful assistant. Your responses will be displayed in a CLI terminal environment.
 
 # Instructions
 1. Provide a clear, concise answer to the current question
@@ -23,17 +25,30 @@ const system_prompt = `You are Bro, a friendly and helpful assistant. Your respo
 
 Response:`
 
+let modelUsed: string | 'unknown'
+
+const modelTracker = createMiddleware({
+  afterModel: async (response: any) => {
+    // Capture model from response metadata (available after LLM call)
+    const lastMessage = response.messages[response.messages.length - 1]
+
+    modelUsed = lastMessage?.response_metadata?.model || 'unknown'
+    return response
+  },
+  name: 'model tracker',
+})
+
 const fallback = modelFallbackMiddleware('groq:llama-3.3-70b-versatile')
 
-export const agent = createAgent({
+export const agent  = createAgent({
   model: 'groq:openai/gpt-oss-120b',
-  middleware: [fallback],
+  middleware: [fallback, modelTracker],
   tools: [web_search_tool()],
-  systemPrompt: system_prompt, // your custom prompt directly,
+  systemPrompt: system_prompt, 
   checkpointer,
 })
 
-const thread_id = randomUUIDv7()
+const thread_id: string = randomUUIDv7()
 
 const config = {
   configurable: { thread_id },
@@ -43,37 +58,42 @@ const config = {
  * Calls the agent with a question and streams the response to stdout.
  * Handles tool execution notifications and formats output for CLI.
  *
- * @param {string} question - The user's question.
- * @returns {Promise<void>}
+ * @param question - The user's question.
+ * @returns A promise that resolves when the operation is complete.
  */
-export const call_agent = async (question) => {
+export const call_agent = async (question: string): Promise<void> => {
   const messages = { messages: [{ role: 'user', content: question }] }
 
   const ora_spinner = ora({
     text: ui.thinking('Thinking..'),
-    isEnabled: Bun.stdout.isTTY,
+    isEnabled: process.stdout.isTTY,
   }).start()
 
-  let spinnerStopped = false
+  let spinnerStopped: boolean = false
 
   const stream = await agent.stream(messages, {
     ...config,
     streamMode: 'messages', // Streams messages with content + tool_calls
   })
+
   // i can find that it is a tool in message.name = tools
   for await (const chunk of stream) {
-    const [nodeName, message] = chunk
+    // Asserting as a tuple to avoid strict type-checking errors on LangGraph's dynamic stream output
+    const [nodeName, message] = chunk as [any, any]
 
     if (!spinnerStopped && message.name !== 'tools') {
       ora_spinner.stop()
       spinnerStopped = true
     }
 
-    if (message.name === 'tools')
+    if (message.name === 'tools') {
       await Bun.write(Bun.stdout, ui.tool('calling a tool...\n'))
-    else {
+    } else {
       await Bun.write(Bun.stdout, ui.answer(nodeName.content))
     }
   }
+
+  await Bun.write(Bun.stdout, ui.meta(`\n\n🤖 ❯ ${modelUsed}\n`))
+
   await Bun.write(Bun.stdout, '\n')
 }
