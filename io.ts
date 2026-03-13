@@ -9,5 +9,4 @@ const rl: Interface = createInterface({
   terminal: true,
 })
 
-rl.
 export { rl }

@@ -1,7 +1,6 @@
-import { createAgent } from 'langchain'
+import { createAgent, modelFallbackMiddleware } from 'langchain'
 import { MemorySaver } from '@langchain/langgraph'
 import { randomUUIDv7 } from 'bun'
-import { llm } from './llm'
 import { web_search_tool } from './tools'
 import ora from 'ora'
 import { ui } from './ui'
@@ -24,13 +23,10 @@ const system_prompt = `You are Bro, a friendly and helpful assistant. Your respo
 
 Response:`
 
-
-const fallback = modelFallbackMiddleware(
-  'together:moonshotai/Kimi-K2.5'
-)
+const fallback = modelFallbackMiddleware('groq:llama-3.3-70b-versatile')
 
 export const agent = createAgent({
-  model: llm,
+  model: 'groq:openai/gpt-oss-120b',
   middleware: [fallback],
   tools: [web_search_tool()],
   systemPrompt: system_prompt, // your custom prompt directly,
