@@ -24,8 +24,14 @@ const system_prompt = `You are Bro, a friendly and helpful assistant. Your respo
 
 Response:`
 
+
+const fallback = modelFallbackMiddleware(
+  'together:moonshotai/Kimi-K2.5'
+)
+
 export const agent = createAgent({
   model: llm,
+  middleware: [fallback],
   tools: [web_search_tool()],
   systemPrompt: system_prompt, // your custom prompt directly,
   checkpointer,
