@@ -3,14 +3,15 @@ import { ui } from './ui'
 
 /**
  * Handles non-interactive mode with streaming and error feedback.
- * @param {string[]} args - Command line arguments.
- * @returns {Promise<void>}
+ * @param args - Command line arguments.
+ * @returns A promise that resolves when the operation is complete.
  */
-export async function handle_args(args) {
+export async function handle_args(args: string[]): Promise<void> {
   if (!args || args.length < 3) {
-    console.error(ui.error(
-      'Usage: bro <question> [-s]\n\nExample: bro "your question" [-s]'
-    )
+    console.error(
+      ui.error(
+        'Usage: bro <question> [-s]\n\nExample: bro "your question" [-s]'
+      )
     )
     process.exit(1)
   }
@@ -20,9 +21,10 @@ export async function handle_args(args) {
     console.error(ui.error('No question provided.'))
     process.exit(1)
   }
+  
   try {
     await call_agent(question)
-  } catch (err) {
+  } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error(ui.error('Error:'), ui.error(msg))
     process.exit(1)

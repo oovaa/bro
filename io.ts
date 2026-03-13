@@ -1,9 +1,9 @@
-import { createInterface } from 'readline'
+import { createInterface, Interface } from 'readline'
 
 /**
  * Readline interface configured for stdin/stdout.
  */
-const rl = createInterface({
+const rl: Interface = createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: true,

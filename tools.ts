@@ -1,17 +1,24 @@
 import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search'
 import { TavilySearch } from '@langchain/tavily'
+import { StructuredTool } from '@langchain/core/tools'
 
 /**
  * Returns a configured web search tool.
  * Uses TavilySearch if TAVILY_API_KEY is present, otherwise falls back to DuckDuckGoSearch.
- * @returns {TavilySearch | DuckDuckGoSearch} The search tool instance.
+ *
+ * The explicit return type annotation prevents TypeScript from inferring the union type
+ * `TavilySearch | DuckDuckGoSearch`, which would cause "Type instantiation is excessively
+ * deep and possibly infinite (ts2589)" when passed to `createAgent`'s generic `TTools`
+ * parameter.
+ *
+ * @returns {StructuredTool} The search tool instance.
  */
-export const web_search_tool = () => {
+export const web_search_tool = (): StructuredTool => {
   if (Bun.env.TAVILY_API_KEY) {
     return new TavilySearch({
       // goooooooood results
       maxResults: 5,
-      apiKey: Bun.env.TAVILY_API_KEY,
+      tavilyApiKey: Bun.env.TAVILY_API_KEY,
     })
   } else return new DuckDuckGoSearch() // old results
 }
