@@ -40,7 +40,7 @@ Response:`
 // })
 
 const fallback = modelFallbackMiddleware(
-  'zai-org/GLM-5',
+  'together:zai-org/GLM-5',
   'together:moonshotai/Kimi-K2.5',
 )
 
