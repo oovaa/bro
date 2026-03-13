@@ -25,26 +25,30 @@ const system_prompt: string = `You are Bro, a friendly and helpful assistant. Yo
 
 Response:`
 
-let modelUsed: string | 'unknown'
+// let modelUsed: string | 'unknown'
 
-const modelTracker = createMiddleware({
-  afterModel: async (response: any) => {
-    // Capture model from response metadata (available after LLM call)
-    const lastMessage = response.messages[response.messages.length - 1]
+// const modelTracker = createMiddleware({
+//   afterModel: async (response: any) => {
+//     // Capture model from response metadata (available after LLM call)
+//     const lastMessage = response.messages[response.messages.length - 1]
+//     console.log(response);
 
-    modelUsed = lastMessage?.response_metadata?.model || 'unknown'
-    return response
-  },
-  name: 'model tracker',
-})
+//     modelUsed = lastMessage?.response_metadata?.model || 'unknown'
+//     return response
+//   },
+//   name: 'model tracker',
+// })
 
-const fallback = modelFallbackMiddleware('groq:llama-3.3-70b-versatile')
+const fallback = modelFallbackMiddleware(
+  'zai-org/GLM-5',
+  'together:moonshotai/Kimi-K2.5',
+)
 
-export const agent  = createAgent({
-  model: 'groq:openai/gpt-oss-120b',
-  middleware: [fallback, modelTracker],
+export const agent = createAgent({
+  model: 'together:Qwen/Qwen3.5-397B-A17B',
+  middleware: [fallback],
   tools: [web_search_tool()],
-  systemPrompt: system_prompt, 
+  systemPrompt: system_prompt,
   checkpointer,
 })
 
@@ -87,13 +91,13 @@ export const call_agent = async (question: string): Promise<void> => {
     }
 
     if (message.name === 'tools') {
-      await Bun.write(Bun.stdout, ui.tool('calling a tool...\n'))
+      await Bun.write(Bun.stdout, ui.tool('calling a tool...🛠️\n'))
     } else {
       await Bun.write(Bun.stdout, ui.answer(nodeName.content))
     }
   }
 
-  await Bun.write(Bun.stdout, ui.meta(`\n\n🤖 ❯ ${modelUsed}\n`))
+  // await Bun.write(Bun.stdout, ui.meta(`\n\n🤖 ❯ ${modelUsed}\n`))
 
   await Bun.write(Bun.stdout, '\n')
 }

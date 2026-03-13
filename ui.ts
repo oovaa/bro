@@ -10,10 +10,21 @@ export interface UI {
 }
 
 export const ui: UI = {
-  answer: chalk.hex('#c0caf5').bold,
-  tool: chalk.hex('#7dcfff').blueBright,
-  thinking: chalk.hex('#434c8e').italic,
-  meta: chalk.hex('#CE3B09').underline,
-  warn: chalk.hex('#ffae57').bold,
-  error: chalk.hex('#ff7a93').bold.underline,
+  // Bright, highly readable blue for the main response
+  answer: chalk.hex('#03ff89').bold, 
+  
+  // Soft purple to distinguish background tool execution
+  tool: chalk.hex('#bb9af7'), 
+  
+  // Dim grayish-blue so it visually recedes while processing
+  thinking: chalk.hex('#565f89').italic, 
+  
+  // Crisp cyan for metadata (like the model name)
+  meta: chalk.hex('#2ac3de').underline, 
+  
+  // Vibrant orange for warnings
+  warn: chalk.hex('#ff9e64').bold, 
+  
+  // Soft but distinct red for errors (dropped the underline to keep it clean)
+  error: chalk.hex('#f7768e').bold, 
 }
