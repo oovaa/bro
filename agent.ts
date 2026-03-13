@@ -70,7 +70,7 @@ export const call_agent = async (question: string): Promise<void> => {
 
   const ora_spinner = ora({
     text: ui.thinking('Thinking..'),
-    isEnabled: process.stdout.isTTY,
+    isEnabled: true,
   }).start()
 
   let spinnerStopped: boolean = false
