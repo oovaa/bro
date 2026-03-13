@@ -39,7 +39,12 @@ Before you begin:
    export GROQ_API_KEY="your_api_key_here"
    ```
 
-4. **Test the CLI Locally**
+4. **Type-check the Code**
+   ```sh
+   bun run tsc --noEmit
+   ```
+
+5. **Test the CLI Locally**
    ```sh
    ./bro "test question"
    ```
@@ -53,30 +58,34 @@ Before you begin:
    # or
    git checkout -b fix/my-bugfix
    ```
-3. **Make your changes** and ensure your code follows the project's style and conventions.
-4. **Test your changes** thoroughly:
+3. **Make your changes** in TypeScript (`.ts` files) and ensure your code follows the project's style and conventions.
+4. **Type-check your changes**:
+   ```sh
+   bun run tsc --noEmit
+   ```
+5. **Test your changes** thoroughly:
    - Test interactive mode: `./bro`
    - Test non-interactive mode: `./bro "test query"`
-   - Test streaming mode: `./bro -s "test query"`
-5. **Commit your changes** with a clear message (see [Commit Message Guidelines](#commit-message-guidelines))
-6. **Push your branch** to your fork:
+6. **Commit your changes** with a clear message (see [Commit Message Guidelines](#commit-message-guidelines))
+7. **Push your branch** to your fork:
    ```sh
    git push origin feature/my-feature
    ```
-7. **Open a pull request** on GitHub and describe your changes in detail.
+8. **Open a pull request** on GitHub and describe your changes in detail.
 
 ## Code Style and Standards
 
-- **JavaScript Standard Style**: Follow modern ES6+ conventions
+- **TypeScript**: All source files use TypeScript (`.ts`). Add explicit type annotations to function parameters, return types, and variables.
 - **File Organization**: Keep files modular and focused on a single responsibility
 - **Comments**: Add comments for complex logic, but prefer self-documenting code
 - **Error Handling**: Always handle errors gracefully with meaningful messages
 - **Dependencies**: Only add new dependencies if absolutely necessary; justify them in your PR
-- **Terminal Output**: Keep CLI output clean and readable; use colors appropriately via the `colors` library
+- **Terminal Output**: Keep CLI output clean and readable; use the `ui` helper from `ui.ts` for colored output
 
 ### Key Principles
 
 - **Simplicity**: Keep the code simple and maintainable
+- **Type Safety**: Use TypeScript types rigorously; avoid `any` where possible
 - **Performance**: Consider performance, especially for streaming responses
 - **User Experience**: CLI interactions should be smooth and intuitive
 - **Compatibility**: Ensure changes work on both Linux and macOS
@@ -95,7 +104,8 @@ Write clear and descriptive commit messages:
 Add streaming support for non-interactive mode
 Fix API key validation in setup script
 Update README with new installation steps
-Refactor agent.js to improve readability
+Refactor agent.ts to improve readability
+Migrate tools.js to TypeScript
 ```
 
 ## Pull Request Process
@@ -110,7 +120,8 @@ Refactor agent.js to improve readability
 ### PR Checklist
 
 Before submitting your pull request, ensure:
-- [ ] Code follows the project's style guidelines
+- [ ] Code follows the project's TypeScript style guidelines
+- [ ] Type-check passes: `bun run tsc --noEmit`
 - [ ] Changes have been tested locally
 - [ ] Documentation has been updated (if needed)
 - [ ] Commit messages are clear and descriptive

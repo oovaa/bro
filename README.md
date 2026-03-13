@@ -1,10 +1,10 @@
-# Bro: Groq-Powered CLI Assistant
+# Bro: AI-Powered CLI Assistant
 
-Bro is a lightweight CLI assistant powered by Groq via LangChain, built on Bun.
+Bro is a lightweight CLI assistant powered by Together AI and Groq via LangChain, built on Bun. The codebase is written in TypeScript for improved type safety and maintainability.
 
 ## Table of Contents
 
-- [Bro: Groq \& DeepSeek AI Assistant](#bro-groq--deepseek-ai-assistant)
+- [Bro: AI-Powered CLI Assistant](#bro-ai-powered-cli-assistant)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
@@ -21,9 +21,10 @@ Bro is a lightweight CLI assistant powered by Groq via LangChain, built on Bun.
 ## Prerequisites
 
 - Linux or macOS (Windows not officially supported)
-- [Bun](https://bun.sh/docs/installation) (required)
-- Node.js (recommended for compatibility)
+- [Bun](https://bun.sh/docs/installation) (required — used as both runtime and package manager)
 - Supported shells: bash, zsh
+- A `GROQ_API_KEY` (required) — get one at [console.groq.com](https://console.groq.com)
+- A `TAVILY_API_KEY` (optional) — enables higher-quality web search, get one at [tavily.com](https://tavily.com)
 
 ## Installation
 
@@ -72,10 +73,22 @@ bro "tell me about quantum computing"
 ## Configuration
 
 The install script automatically sets up:
-- `GROQ_API_KEY` in your shell config
-- `TAVILY_API_KEY` in your shell config (optional)
+- `GROQ_API_KEY` in your shell config (required)
+- `TAVILY_API_KEY` in your shell config (optional — enables Tavily web search)
 - Symbolic link in `~/.local/bin`
-- Required dependencies
+- Required dependencies via `bun install`
+
+### Models
+
+Bro uses the following AI models (via Together AI and Groq):
+
+| Role     | Model                          |
+|----------|-------------------------------|
+| Primary  | `Qwen/Qwen3.5-397B-A17B`      |
+| Fallback | `zai-org/GLM-5`               |
+| Fallback | `moonshotai/Kimi-K2.5`        |
+
+Model fallback is handled automatically if the primary model is unavailable.
 
 ## Troubleshooting
 
@@ -102,8 +115,9 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 1. **Fork the repository** and clone your fork
 2. **Install dependencies**: `bun install`
-3. **Make your changes** and test them locally
-4. **Submit a pull request** with a clear description
+3. **Make your changes** in TypeScript (`.ts` files)
+4. **Type-check your code**: `bun run tsc --noEmit`
+5. **Submit a pull request** with a clear description
 
 ### Ways to Contribute
 
