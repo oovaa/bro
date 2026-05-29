@@ -1,6 +1,6 @@
 # Bro: AI-Powered CLI Assistant
 
-Bro is a lightweight CLI assistant powered by Together AI and Groq via LangChain, built on Bun. The codebase is written in TypeScript for improved type safety and maintainability.
+Bro is a lightweight CLI assistant powered by **Together AI** (primary) and **Groq** (fallback) via LangChain, built on Bun. The codebase is written in TypeScript for improved type safety and maintainability.
 
 ## Table of Contents
 
@@ -80,15 +80,22 @@ The install script automatically sets up:
 
 ### Models
 
-Bro uses the following AI models (via Together AI and Groq):
+Bro uses the following AI models (via Together AI with Groq fallback):
 
-| Role     | Model                          |
-|----------|-------------------------------|
-| Primary  | `Qwen/Qwen3.5-397B-A17B`      |
-| Fallback | `zai-org/GLM-5`               |
-| Fallback | `moonshotai/Kimi-K2.5`        |
+| Role     | Model                          | Provider     |
+|----------|-------------------------------|--------------|
+| Primary  | `Qwen/Qwen3.5-397B-A17B`     | Together AI  |
+| Fallback | `zai-org/GLM-5`              | Together AI  |
+| Fallback | `moonshotai/Kimi-K2.5`       | Together AI  |
 
 Model fallback is handled automatically if the primary model is unavailable.
+
+### Web Search
+
+Bro includes built-in web search for up-to-date answers:
+
+- **Tavily** (preferred) — when `TAVILY_API_KEY` is set, uses Tavily for higher-quality results
+- **DuckDuckGo** — used as a fallback when Tavily is not configured
 
 ## Troubleshooting
 
