@@ -1,24 +1,53 @@
 # Bro: AI-Powered CLI Assistant
 
-Bro is a lightweight CLI assistant powered by **Together AI** (primary) and **Groq** (fallback) via LangChain, built on Bun. The codebase is written in TypeScript for improved type safety and maintainability.
+[![TypeScript](https://img.shields.io/badge/typescript-5+-blue.svg)](https://typescriptlang.org/)
+[![Bun](https://img.shields.io/badge/runtime-bun-orange.svg)](https://bun.sh/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## Table of Contents
+> **Bro** — Lightweight CLI assistant powered by **Groq** (primary) via LangChain, built on Bun. The codebase is written in TypeScript for improved type safety and maintainability.
 
-- [Bro: AI-Powered CLI Assistant](#bro-ai-powered-cli-assistant)
-  - [Table of Contents](#table-of-contents)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Updating](#updating)
-  - [Usage](#usage)
-    - [Interactive Mode](#interactive-mode)
-    - [Non-Interactive Mode](#non-interactive-mode)
-  - [Configuration](#configuration)
-  - [Troubleshooting](#troubleshooting)
-  - [Uninstall](#uninstall)
-  - [Contributing](#contributing)
-  - [Supported Platforms](#supported-platforms)
+---
 
-## Prerequisites
+## 🎯 Overview
+
+**Bro** is a terminal-based AI assistant that runs locally using **Groq** for fast inference. It features web search capabilities, streaming responses, and a clean CLI interface.
+
+---
+
+## 🛠 Tech Stack
+
+| Category | Technologies |
+|----------|--------------|
+| **Runtime** | Bun 1.0+ |
+| **Language** | TypeScript 5+ |
+| **AI Framework** | LangChain |
+| **LLM Provider** | Groq (primary) |
+| **Web Search** | Tavily (preferred) / DuckDuckGo (fallback) |
+| **UI** | ora (spinners), chalk/colors |
+| **Validation** | Zod |
+
+---
+
+## 📁 Project Structure
+
+```
+bro/
+├── agent.ts          # LangChain agent with tools & streaming
+├── llm.ts            # Groq ChatGroq configuration
+├── tools.ts          # Web search tools (Tavily + DuckDuckGo)
+├── ui.ts             # CLI output formatting
+├── nonInteractive.ts # Non-interactive mode handler
+├── install           # Install script (sets up API keys, symlink)
+├── uninstall         # Uninstall script
+├── update            # Update script
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+---
+
+## 🔧 Prerequisites
 
 - Linux or macOS (Windows not officially supported)
 - [Bun](https://bun.sh/docs/installation) (required — used as both runtime and package manager)
@@ -26,127 +55,153 @@ Bro is a lightweight CLI assistant powered by **Together AI** (primary) and **Gr
 - A `GROQ_API_KEY` (required) — get one at [console.groq.com](https://console.groq.com)
 - A `TAVILY_API_KEY` (optional) — enables higher-quality web search, get one at [tavily.com](https://tavily.com)
 
-## Installation
+---
 
-To install the CLI tool:
+## 🚀 Installation
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/oovaa/bro.git
-    ```
-2. Navigate to the project directory:
-    ```sh
-    cd bro
-    ```
-3. Verify Bun is installed:
-    ```sh
-    bun --version
-    ```
-    Install Bun from [bun.sh](https://bun.sh/docs/installation) if needed.
+```bash
+# Clone the repository
+git clone https://github.com/oovaa/bro.git
+cd bro
 
-4. Run the install script:
-  ```sh
-  ./install <GROQ_API_KEY> [TAVILY_API_KEY]
-  ```
-  - `GROQ_API_KEY` is required.
-  - `TAVILY_API_KEY` is optional (enables higher-quality web search).
+# Verify Bun is installed
+bun --version
+# Install Bun from https://bun.sh/docs/installation if needed
 
-## Updating
-
-To update:
-```sh
-git pull origin main
+# Run the install script (interactive, prompts for API keys)
+./install
+# Or non-interactive:
+# ./install <GROQ_API_KEY> [TAVILY_API_KEY]
 ```
 
-## Usage
+The install script:
+- Installs dependencies via `bun install`
+- Prompts for `GROQ_API_KEY` (required) and `TAVILY_API_KEY` (optional)
+- Creates symlink in `~/.local/bin/bro`
+- Adds API keys to your shell config (`.bashrc` or `.zshrc`)
+
+---
+
+## 📖 Usage
 
 ### Interactive Mode
-```sh
+```bash
 bro
 ```
+Starts an interactive chat session. Type your questions and press Enter. Press `Ctrl+C` to exit.
 
 ### Non-Interactive Mode
-```sh
+```bash
 bro "tell me about quantum computing"
 ```
+Runs a single query and exits.
 
-## Configuration
+---
 
-The install script automatically sets up:
-- `GROQ_API_KEY` in your shell config (required)
-- `TAVILY_API_KEY` in your shell config (optional — enables Tavily web search)
-- Symbolic link in `~/.local/bin`
-- Required dependencies via `bun install`
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GROQ_API_KEY` | Yes | Groq API key for LLM inference |
+| `TAVILY_API_KEY` | No | Tavily API key for web search (falls back to DuckDuckGo) |
 
 ### Models
 
-Bro uses the following AI models (via Together AI with Groq fallback):
+Bro uses **Groq** with the following models:
 
-| Role     | Model                          | Provider     |
-|----------|-------------------------------|--------------|
-| Primary  | `Qwen/Qwen3.5-397B-A17B`     | Together AI  |
-| Fallback | `zai-org/GLM-5`              | Together AI  |
-| Fallback | `moonshotai/Kimi-K2.5`       | Together AI  |
+| Role | Model | Purpose |
+|------|-------|---------|
+| Primary | `openai/gpt-oss-120b` | Main LLM for responses |
+| Fallback | `llama-3.1-8b-instant` | Backup if primary unavailable |
 
-Model fallback is handled automatically if the primary model is unavailable.
+Model fallback is handled automatically via LangChain's `modelFallbackMiddleware`.
 
 ### Web Search
 
-Bro includes built-in web search for up-to-date answers:
+| Provider | When Used |
+|----------|-----------|
+| **Tavily** | When `TAVILY_API_KEY` is set (higher quality) |
+| **DuckDuckGo** | Fallback when Tavily not configured |
 
-- **Tavily** (preferred) — when `TAVILY_API_KEY` is set, uses Tavily for higher-quality results
-- **DuckDuckGo** — used as a fallback when Tavily is not configured
+---
 
-## Troubleshooting
+## 🔄 Updating
 
-- If you see errors about Bun or missing dependencies, ensure Bun is installed and in your PATH.
-- If `bro` is not found, make sure `~/.local/bin` is in your PATH and the symbolic link exists.
-- For shell issues, only bash and zsh are supported.
-- If you need to reset your API key, edit your shell config file and restart your terminal.
+```bash
+# Pull latest changes
+git pull origin main
 
-## Uninstall
-```sh
+# Re-run install to update dependencies and symlink
+./install
+```
+
+---
+
+## 🛠 Development
+
+```bash
+# Install dependencies
+bun install
+
+# Type-check
+bun run tsc --noEmit
+
+# Test locally
+./bro "test question"
+
+# Run in interactive mode
+./bro
+```
+
+---
+
+## 🗑️ Uninstall
+
+```bash
 ./uninstall
 ```
 
 Removes:
-- Symbolic link
-- Environment variables
+- Symbolic link (`~/.local/bin/bro`)
+- Environment variables from shell config
 - Local dependencies
 
-## Contributing
+---
 
-We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+## 🐛 Troubleshooting
 
-### Quick Start for Contributors
+| Issue | Solution |
+|-------|----------|
+| `bro: command not found` | Ensure `~/.local/bin` is in your PATH, or re-run `./install` |
+| `GROQ_API_KEY not set` | Run `./install` again or manually add to `.bashrc`/`.zshrc` |
+| Bun not found | Install Bun: `curl -fsSL https://bun.sh/install \| bash` |
+| Type errors | Run `bun run tsc --noEmit` to diagnose |
 
-1. **Fork the repository** and clone your fork
-2. **Install dependencies**: `bun install`
-3. **Make your changes** in TypeScript (`.ts` files)
-4. **Type-check your code**: `bun run tsc --noEmit`
-5. **Submit a pull request** with a clear description
+---
 
-### Ways to Contribute
+## 🤝 Contributing
 
-- 🐛 **Report bugs** by opening an issue with detailed information
-- 💡 **Suggest features** or enhancements
-- 📝 **Improve documentation** (README, code comments, guides)
-- 🔧 **Submit pull requests** to fix issues or add features
-- ⭐ **Star the repository** to show your support
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
 
-### Development Guidelines
+Quick start:
+1. Fork and clone
+2. `bun install`
+3. Make changes in TypeScript (`.ts` files)
+4. `bun run tsc --noEmit`
+5. Test: `./bro "test"`
+6. Submit PR
 
-Please read our [Contributing Guide](docs/CONTRIBUTING.md) for detailed information on:
-- Development setup and workflow
-- Code style and standards
-- Commit message conventions
-- Pull request process
-- Testing your changes
+---
 
-### Code of Conduct
+## 📄 License
 
-Be respectful and inclusive. We're committed to providing a welcoming environment for everyone.
+MIT License - see [LICENSE](LICENSE) for details.
 
-## Supported Platforms
+---
 
-Tested on Linux and macOS. Windows is not officially supported.
+## 👤 Author
+
+**Omar Abdulrahim**  
+GitHub: [@oovaa](https://github.com/oovaa)
